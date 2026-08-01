@@ -11,6 +11,29 @@ import { getConversation, addMessage, createConversation, listConversations, typ
 import { getModel, getModelProvider, PROVIDERS } from '@/lib/models';
 import { getPuterAI, waitForPuter } from '@/lib/puter-ai';
 
+/** Extract a human-readable error message from any thrown value */
+function extractErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  if (error && typeof error === 'object') {
+    const obj = error as Record<string, unknown>;
+    if (typeof obj.message === 'string') return obj.message;
+    if (typeof obj.error === 'string') return obj.error;
+    if (obj.error && typeof obj.error === 'object') {
+      const inner = obj.error as Record<string, unknown>;
+      if (typeof inner.message === 'string') return inner.message;
+    }
+    if (typeof obj.detail === 'string') return obj.detail;
+    if (typeof obj.statusText === 'string') return obj.statusText;
+    try {
+      return JSON.stringify(error);
+    } catch {
+      return 'An unknown error occurred';
+    }
+  }
+  return 'An unknown error occurred';
+}
+
 interface ChatPanelProps {
   conversationId: string | null;
   onNewConversation: (id: string) => void;
@@ -119,19 +142,32 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
         { role: 'user' as const, content: userContent },
       ];
 
-      const response = await puterAI.chat(msgs, {
-        model: selectedModel,
-        stream: true,
-        temperature,
-        max_tokens: maxTokens,
-      });
+      let response: unknown;
+      try {
+        response = await puterAI.chat(msgs, {
+          model: selectedModel,
+          stream: true,
+          temperature,
+          max_tokens: maxTokens,
+        });
+      } catch (streamErr: unknown) {
+        // If streaming fails, retry without streaming
+        console.warn('Streaming failed, retrying without stream:', streamErr);
+        response = await puterAI.chat(msgs, {
+          model: selectedModel,
+          stream: false,
+          temperature,
+          max_tokens: maxTokens,
+        });
+      }
 
       let fullContent = '';
       let fullReasoning = '';
 
       // Handle streaming
-      if (response && typeof response[Symbol.asyncIterator] === 'function') {
-        for await (const part of response) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (response && typeof (response as any)[Symbol.asyncIterator] === 'function') {
+        for await (const part of response as AsyncIterable<any>) {
           if (part?.text) {
             fullContent += part.text;
             setStreamingContent(fullContent);
@@ -145,7 +181,22 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
         fullContent = response;
         setStreamingContent(fullContent);
       } else if (response?.message?.content) {
-        fullContent = response.message.content;
+        fullContent = typeof response.message.content === 'string'
+          ? response.message.content
+          : JSON.stringify(response.message.content);
+        setStreamingContent(fullContent);
+      } else if (response?.text) {
+        fullContent = response.text;
+        setStreamingContent(fullContent);
+      } else if (response && typeof response === 'object') {
+        const r = response as Record<string, unknown>;
+        if (typeof r.content === 'string') {
+          fullContent = r.content;
+        } else if (typeof r.result === 'string') {
+          fullContent = r.result;
+        } else {
+          fullContent = JSON.stringify(response, null, 2);
+        }
         setStreamingContent(fullContent);
       }
 
@@ -154,7 +205,7 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
         setMessages((prev) => [...prev, assistantMsg]);
       }
     } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : String(error);
+      const msg = extractErrorMessage(error);
       const errorMsg = addMessage(convId, { role: 'assistant', content: `⚠️ Error: ${msg}` });
       setMessages((prev) => [...prev, errorMsg]);
     } finally {
@@ -184,28 +235,69 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
         const mediaType: 'image' | 'audio' | 'video' = type;
 
         if (type === 'image') {
-          const img = await puterAI.txt2img(prompt, opts as { model?: string });
-          // img is an HTMLImageElement - get its src
-          mediaUrl = img.src || '';
-          if (!mediaUrl && img instanceof HTMLImageElement) {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.naturalWidth || 1024;
-            canvas.height = img.naturalHeight || 1024;
-            const ctx = canvas.getContext('2d');
-            if (ctx) ctx.drawImage(img, 0, 0);
-            mediaUrl = canvas.toDataURL('image/png');
+          const result = await puterAI.txt2img(prompt, opts as { model?: string });
+          // result could be HTMLImageElement, Blob, string URL, or object
+          if (result instanceof HTMLImageElement) {
+            mediaUrl = result.src || '';
+            if (!mediaUrl) {
+              const canvas = document.createElement('canvas');
+              canvas.width = result.naturalWidth || 1024;
+              canvas.height = result.naturalHeight || 1024;
+              const ctx = canvas.getContext('2d');
+              if (ctx) ctx.drawImage(result, 0, 0);
+              mediaUrl = canvas.toDataURL('image/png');
+            }
+          } else if (result instanceof Blob) {
+            mediaUrl = URL.createObjectURL(result);
+          } else if (typeof result === 'string') {
+            mediaUrl = result;
+          } else if (result && typeof result === 'object') {
+            const r = result as Record<string, unknown>;
+            if (typeof r.src === 'string') mediaUrl = r.src;
+            else if (typeof r.url === 'string') mediaUrl = r.url;
+            else if (typeof r.image === 'string') mediaUrl = r.image;
+            else if (typeof r.data === 'string') mediaUrl = r.data;
+          }
+          if (!mediaUrl) {
+            throw new Error('Image generation returned an unexpected format. Please try a different model.');
           }
         } else if (type === 'audio') {
-          const blob = await puterAI.txt2speech(prompt, opts as { model?: string; voice?: string });
-          mediaUrl = URL.createObjectURL(blob);
+          const result = await puterAI.txt2speech(prompt, opts as { model?: string; voice?: string });
+          // result could be Blob, Audio element, string, or object
+          if (result instanceof Blob) {
+            mediaUrl = URL.createObjectURL(result);
+          } else if (result instanceof HTMLAudioElement) {
+            mediaUrl = result.src;
+          } else if (typeof result === 'string') {
+            mediaUrl = result;
+          } else if (result && typeof result === 'object') {
+            const r = result as Record<string, unknown>;
+            if (typeof r.url === 'string') mediaUrl = r.url;
+            else if (typeof r.src === 'string') mediaUrl = r.src;
+            else if (r.blob instanceof Blob) mediaUrl = URL.createObjectURL(r.blob);
+          }
+          if (!mediaUrl) {
+            throw new Error('Audio generation returned an unexpected format. Please try a different model.');
+          }
         } else if (type === 'video') {
           // Video generation via puter.js
-          const puterAny = puterAI as unknown as { txt2vid?: (o: Record<string, unknown>) => Promise<Blob> };
+          const puterAny = puterAI as unknown as { txt2vid?: (o: Record<string, unknown>) => Promise<unknown> };
           if (typeof puterAny.txt2vid !== 'function') {
             throw new Error('Video generation (txt2vid) is not yet available in puter.js. Try image or audio generation.');
           }
-          const blob = await puterAny.txt2vid({ prompt, ...opts });
-          mediaUrl = URL.createObjectURL(blob);
+          const result = await puterAny.txt2vid({ prompt, ...opts });
+          if (result instanceof Blob) {
+            mediaUrl = URL.createObjectURL(result);
+          } else if (typeof result === 'string') {
+            mediaUrl = result;
+          } else if (result && typeof result === 'object') {
+            const r = result as Record<string, unknown>;
+            if (typeof r.url === 'string') mediaUrl = r.url;
+            else if (r.blob instanceof Blob) mediaUrl = URL.createObjectURL(r.blob);
+          }
+          if (!mediaUrl) {
+            throw new Error('Video generation returned an unexpected format.');
+          }
         }
 
         const assistantMsg = addMessage(convId, {
@@ -216,7 +308,7 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
         });
         setMessages((prev) => [...prev, assistantMsg]);
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = extractErrorMessage(error);
         const errorMsg = addMessage(convId, { role: 'assistant', content: `⚠️ ${type} generation failed: ${msg}` });
         setMessages((prev) => [...prev, errorMsg]);
       } finally {
