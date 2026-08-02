@@ -7,9 +7,8 @@ import { ModelPicker } from './ModelPicker';
 import { ModelSettingsPanel } from './ModelSettingsPanel';
 import { GenerateModal } from './GenerateModal';
 import { MessageRenderer } from './MessageRenderer';
-import { getConversation, addMessage, createConversation, listConversations, type StoredMessage } from '@/lib/storage';
-import { getModel, getModelProvider, PROVIDERS } from '@/lib/models';
-import { getPuterAI, waitForPuter } from '@/lib/puter-ai';
+import { getConversation, addMessage, createConversation, type StoredMessage } from '@/lib/storage';
+import { getPuterAI } from '@/lib/puter-ai';
 
 /** Extract a human-readable error message from any thrown value */
 function extractErrorMessage(error: unknown): string {
@@ -41,7 +40,20 @@ interface ChatPanelProps {
 }
 
 export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }: ChatPanelProps) {
-  const { selectedModel, temperature, maxTokens, systemPrompt, showReasoning } = useModel();
+  const {
+    selectedModel,
+    temperature,
+    maxTokens,
+    systemPrompt,
+    showReasoning,
+    findModel,
+    findProvider,
+    totalModels,
+    puterStatus,
+    puterError,
+    setPuterError,
+    retryPuter,
+  } = useModel();
 
   const [messages, setMessages] = useState<StoredMessage[]>([]);
   const [input, setInput] = useState('');
@@ -49,8 +61,6 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
   const [streamingContent, setStreamingContent] = useState('');
   const [streamingReasoning, setStreamingReasoning] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [puterReady, setPuterReady] = useState(false);
-  const [puterError, setPuterError] = useState<string | null>(null);
 
   // Image upload
   const [imageAttachment, setImageAttachment] = useState<{ dataUrl: string; mimeType: string } | null>(null);
@@ -63,13 +73,6 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Wait for puter.js to be ready
-  useEffect(() => {
-    waitForPuter()
-      .then(() => setPuterReady(true))
-      .catch((err) => setPuterError(err.message));
-  }, []);
 
   // Load messages when conversation changes
   useEffect(() => {
@@ -213,7 +216,7 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
       setStreamingContent('');
       setStreamingReasoning('');
     }
-  }, [input, isStreaming, isGenerating, imageAttachment, ensureConversation, selectedModel, temperature, maxTokens, systemPrompt, showReasoning]);
+  }, [input, isStreaming, isGenerating, imageAttachment, ensureConversation, selectedModel, temperature, maxTokens, systemPrompt, showReasoning, setPuterError]);
 
   const handleGenerate = useCallback(
     async (type: 'image' | 'audio' | 'video', prompt: string, opts: Record<string, unknown>) => {
@@ -315,7 +318,7 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
         setIsGenerating(false);
       }
     },
-    [ensureConversation]
+    [ensureConversation, setPuterError]
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -336,8 +339,8 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
     e.target.value = '';
   };
 
-  const model = getModel(selectedModel);
-  const provider = getModelProvider(selectedModel);
+  const model = findModel(selectedModel);
+  const provider = findProvider(selectedModel);
 
   return (
     <div className="flex flex-col h-screen min-h-0">
@@ -367,7 +370,7 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
           className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all hover:bg-purple-500/20 border border-purple-500/30 bg-purple-500/10"
           title="Change model"
         >
-          {provider && (
+          {provider?.logo && (
             <img
               src={provider.logo}
               alt={provider.name}
@@ -382,9 +385,17 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
 
         {/* Puter status indicator */}
         <div className="flex items-center gap-1.5">
-          <div className={`w-2 h-2 rounded-full ${puterReady ? 'bg-emerald-400 shadow-lg shadow-emerald-400/50' : 'bg-yellow-400 animate-pulse'}`} />
+          <div
+            className={`w-2 h-2 rounded-full ${
+              puterStatus === 'ready'
+                ? 'bg-emerald-400 shadow-lg shadow-emerald-400/50'
+                : puterStatus === 'error'
+                  ? 'bg-red-400'
+                  : 'bg-yellow-400 animate-pulse'
+            }`}
+          />
           <span className="text-[10px] text-slate-400 hidden sm:inline">
-            {puterReady ? 'Connected' : 'Loading...'}
+            {puterStatus === 'ready' ? 'Connected' : puterStatus === 'error' ? 'Offline' : 'Connecting…'}
           </span>
         </div>
 
@@ -403,8 +414,8 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
       {puterError && (
         <div className="shrink-0 px-4 py-2 bg-red-500/20 border-b border-red-500/30 text-red-300 text-xs flex items-center gap-2">
           <span>⚠️ {puterError}</span>
-          <button onClick={() => { setPuterError(null); window.location.reload(); }} className="ml-auto text-red-200 hover:text-white underline">
-            Reload
+          <button onClick={retryPuter} className="ml-auto text-red-200 hover:text-white underline">
+            Retry
           </button>
         </div>
       )}
@@ -421,7 +432,9 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
               <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent mb-2" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
                 Welcome to Lisichka
               </h2>
-              <p className="text-purple-200/80 mb-1">Your mystical AI companion with 350+ models</p>
+              <p className="text-purple-200/80 mb-1">
+                Your mystical AI companion with {totalModels}+ models
+              </p>
               <p className="text-sm text-purple-300/50 mb-6">Send a message, generate images, audio, or video — all free</p>
               
               {/* Quick action chips */}
@@ -580,7 +593,7 @@ export function ChatPanel({ conversationId, onNewConversation, onToggleSidebar }
         <div className="flex items-center justify-center gap-1.5 mt-2">
           <Zap className="w-3 h-3 text-purple-500" />
           <p className="text-[10px] text-purple-400/60">
-            puter.js · {PROVIDERS.reduce((s, p) => s + p.models.length, 0)} models · free · no API key needed
+            puter.js · {totalModels} models · free · no API key needed
           </p>
         </div>
       </div>

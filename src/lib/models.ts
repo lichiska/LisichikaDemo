@@ -7,6 +7,8 @@ export interface ModelInfo {
   name: string;
   provider: string;
   capabilities: Capability[];
+  /** Context window in tokens, when reported by the live catalog */
+  contextWindow?: number;
 }
 
 export interface ProviderInfo {
@@ -328,16 +330,80 @@ export function getModelProvider(modelId: string): ProviderInfo | undefined {
   return PROVIDERS.find((p) => p.models.some((m) => m.id === modelId));
 }
 
-export const IMAGE_MODELS = [
-  'gpt-image-2', 'dall-e-3', 'flux-1.1-pro', 'flux-1-schnell',
-  'stable-diffusion-xl', 'stable-diffusion-3-medium', 'playground-v2.5',
+export interface MediaModelOption {
+  id: string;
+  label: string;
+  note?: string;
+}
+
+export const IMAGE_MODEL_OPTIONS: MediaModelOption[] = [
+  { id: 'gpt-image-2', label: 'GPT Image 2', note: 'Sharp detail' },
+  { id: 'gpt-image-1', label: 'GPT Image 1', note: 'Reliable' },
+  { id: 'dall-e-3', label: 'DALL·E 3', note: 'Painterly' },
+  { id: 'gemini-3-pro-image-preview', label: 'Gemini 3 Pro Image', note: 'Best text' },
+  { id: 'gemini-2.5-flash-image', label: 'Gemini Flash Image', note: 'Fast' },
+  { id: 'flux-1.1-pro', label: 'FLUX 1.1 Pro', note: 'Photoreal' },
+  { id: 'flux-1-schnell', label: 'FLUX Schnell', note: 'Fastest' },
+  { id: 'stable-diffusion-3-medium', label: 'SD 3 Medium', note: 'Balanced' },
+  { id: 'stable-diffusion-xl', label: 'SDXL', note: 'Classic' },
+  { id: 'grok-imagine-image', label: 'Grok Imagine', note: 'Bold' },
+  { id: 'qwen-image-2.0-pro', label: 'Qwen Image 2.0 Pro', note: 'Poster art' },
+  { id: 'playground-v2.5', label: 'Playground v2.5', note: 'Stylised' },
 ];
 
-export const VIDEO_MODELS = [
-  'minimax-video-01', 'wan-t2v-14b', 'kling-video-v2.0', 'luma-ray2-flash', 'veo-3',
+export const VIDEO_MODEL_OPTIONS: MediaModelOption[] = [
+  { id: 'minimax-video-01', label: 'MiniMax Video 01', note: 'Cinematic' },
+  { id: 'wan-t2v-14b', label: 'Wan T2V 14B', note: 'Cost effective' },
+  { id: 'kling-video-v2.0', label: 'Kling 2.0', note: 'Smooth motion' },
+  { id: 'luma-ray2-flash', label: 'Luma Ray2 Flash', note: 'Fast' },
+  { id: 'veo-3', label: 'Veo 3', note: 'High quality' },
 ];
+
+export const IMAGE_MODELS = IMAGE_MODEL_OPTIONS.map((m) => m.id);
+export const VIDEO_MODELS = VIDEO_MODEL_OPTIONS.map((m) => m.id);
 
 export const TTS_VOICES = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'] as const;
+
+export interface ImageSizePreset {
+  id: string;
+  label: string;
+  hint: string;
+  width: number;
+  height: number;
+}
+
+export const IMAGE_SIZE_PRESETS: ImageSizePreset[] = [
+  { id: 'square', label: '1:1', hint: 'Square', width: 1024, height: 1024 },
+  { id: 'portrait', label: '3:4', hint: 'Portrait', width: 896, height: 1152 },
+  { id: 'landscape', label: '4:3', hint: 'Landscape', width: 1152, height: 896 },
+  { id: 'wide', label: '16:9', hint: 'Cinematic', width: 1280, height: 720 },
+  { id: 'tall', label: '9:16', hint: 'Story', width: 720, height: 1280 },
+];
+
+export interface ImageStylePreset {
+  id: string;
+  label: string;
+  emoji: string;
+  suffix: string;
+}
+
+export const IMAGE_STYLE_PRESETS: ImageStylePreset[] = [
+  { id: 'none', label: 'No preset', emoji: '⚪', suffix: '' },
+  { id: 'cartoon', label: 'Cartoon', emoji: '🦊', suffix: ', vibrant 2D cartoon animation still, bold clean linework, cel shading, expressive character design' },
+  { id: 'anime', label: 'Anime', emoji: '🌸', suffix: ', modern anime key visual, crisp lineart, soft gradient lighting, detailed background' },
+  { id: 'concept', label: 'Concept art', emoji: '🎨', suffix: ', cinematic concept art, dramatic rim lighting, painterly detail, epic composition' },
+  { id: 'photoreal', label: 'Photoreal', emoji: '📷', suffix: ', photorealistic, 50mm lens, natural light, shallow depth of field, ultra detailed' },
+  { id: 'watercolor', label: 'Watercolor', emoji: '💧', suffix: ', soft watercolor illustration, textured paper, gentle washes, hand painted feel' },
+  { id: 'render3d', label: '3D render', emoji: '🧊', suffix: ', stylised 3D render, subsurface scattering, studio lighting, high fidelity materials' },
+  { id: 'pixel', label: 'Pixel art', emoji: '🕹️', suffix: ', detailed pixel art, limited palette, crisp pixels, retro game sprite style' },
+];
+
+export const IMAGE_PROMPT_IDEAS = [
+  'A mystical fox spirit floating above cherry blossom trees at dusk',
+  'Cozy animation studio at night, warm lamps, storyboards on the wall',
+  'Character turnaround sheet of a cheerful orange fox animator',
+  'Neon-lit city skyline reflected in rain puddles, cinematic wide shot',
+];
 
 export const CAPABILITY_LABELS: Record<Capability, { label: string; icon: string; description: string }> = {
   chat: { label: 'Chat', icon: '💬', description: 'Text conversation' },
@@ -350,3 +416,188 @@ export const CAPABILITY_LABELS: Record<Capability, { label: string; icon: string
   search: { label: 'Search', icon: '🔍', description: 'Web search integration' },
   agentic: { label: 'Agentic', icon: '🤖', description: 'Autonomous task execution' },
 };
+
+/* ------------------------------------------------------------------ */
+/*  Live catalog: build providers from `puter.ai.listModels()` output  */
+/* ------------------------------------------------------------------ */
+
+import type { PuterRawModel } from './puter-ai';
+
+/** Providers that only appear in the live catalog. */
+const EXTRA_PROVIDER_META: Record<string, { name: string; logo: string; color: string }> = {
+  microsoft: { name: 'Microsoft', logo: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/microsoft.svg', color: '#5E9CFF' },
+  openrouter: { name: 'OpenRouter', logo: '', color: '#8B8DF6' },
+  groq: { name: 'Groq', logo: '', color: '#F55036' },
+  together: { name: 'Together AI', logo: '', color: '#3B82F6' },
+  blackforest: { name: 'Black Forest Labs', logo: '', color: '#22D3EE' },
+  stability: { name: 'Stability AI', logo: '', color: '#A855F7' },
+  ideogram: { name: 'Ideogram', logo: '', color: '#F472B6' },
+  elevenlabs: { name: 'ElevenLabs', logo: '', color: '#E879F9' },
+  baidu: { name: 'Baidu', logo: PROVIDER_LOGOS.baidu, color: PROVIDER_COLORS.baidu },
+  liquid: { name: 'Liquid AI', logo: PROVIDER_LOGOS.liquid, color: PROVIDER_COLORS.liquid },
+  stepfun: { name: 'StepFun', logo: PROVIDER_LOGOS.stepfun, color: PROVIDER_COLORS.stepfun },
+  writer: { name: 'Writer', logo: PROVIDER_LOGOS.writer, color: PROVIDER_COLORS.writer },
+  ai21: { name: 'AI21 Labs', logo: PROVIDER_LOGOS.ai21, color: PROVIDER_COLORS.ai21 },
+  upstage: { name: 'Upstage', logo: PROVIDER_LOGOS.upstage, color: PROVIDER_COLORS.upstage },
+  other: { name: 'More providers', logo: '', color: '#A78BFA' },
+};
+
+/** Ordered matchers — first hit wins, so keep specific patterns on top. */
+const PROVIDER_MATCHERS: [string, RegExp][] = [
+  ['microsoft', /(microsoft|phi-\d|wizardlm)/i],
+  ['claude', /(claude|anthropic)/i],
+  ['gemini', /(gemini|google|gemma|imagen|lyria|veo|palm)/i],
+  ['grok', /(grok|x-ai|xai)/i],
+  ['mistral', /(mistral|codestral|devstral|pixtral|magistral|mixtral)/i],
+  ['deepseek', /deepseek/i],
+  ['qwen', /(qwen|qwq|alibaba|tongyi)/i],
+  ['kimi', /(kimi|moonshot)/i],
+  ['llama', /(llama|meta-)/i],
+  ['perplexity', /(perplexity|sonar)/i],
+  ['cohere', /(cohere|command-)/i],
+  ['amazon', /(amazon|nova-|bedrock|titan)/i],
+  ['nvidia', /(nvidia|nemotron)/i],
+  ['bytedance', /(bytedance|seedance|seedream|seed-\d)/i],
+  ['tencent', /(tencent|hunyuan)/i],
+  ['zai', /(z-ai|zhipu|glm)/i],
+  ['minimax', /minimax/i],
+  ['baidu', /(baidu|ernie)/i],
+  ['nous', /(nousresearch|hermes)/i],
+  ['arcee', /(arcee|trinity)/i],
+  ['liquid', /(liquid|lfm)/i],
+  ['stepfun', /(stepfun|step-\d)/i],
+  ['writer', /(writer|palmyra)/i],
+  ['sakana', /(sakana|fugu)/i],
+  ['ai21', /(ai21|jamba)/i],
+  ['upstage', /(upstage|solar-)/i],
+  ['blackforest', /(black-?forest|flux)/i],
+  ['stability', /(stability|stable-?diffusion|sdxl|sd3)/i],
+  ['ideogram', /ideogram/i],
+  ['elevenlabs', /(elevenlabs|eleven_)/i],
+  ['openai', /(openai|gpt|dall-?e|whisper|sora|o1|o3|o4|codex)/i],
+  ['groq', /groq/i],
+  ['together', /together/i],
+  ['openrouter', /openrouter/i],
+];
+
+const CAPABILITY_MATCHERS: [Capability, RegExp][] = [
+  ['image', /(image|img|dall-?e|flux|imagen|stable-?diffusion|sdxl|sd3|playground|ideogram|recraft|seedream|imagine|photon|banana)/i],
+  ['audio', /(tts|speech|audio|voice|lyria|music|whisper|scribe|eleven)/i],
+  ['code', /(code|coder|codex|devstral|codestral|starcoder)/i],
+  ['vision', /(vision|-vl|omni|multimodal|4o|gemini|claude|pixtral|llava|internvl)/i],
+  ['reasoning', /(^|[/\-_])(o1|o3|o4|r1|reason|think|magistral|qwq|opus|pro)/i],
+  ['math', /(math|o1|o3|r1|qwq)/i],
+  ['search', /(sonar|perplexity|search|online)/i],
+  ['agentic', /(agent|opus|fugu|glm-5)/i],
+];
+
+function providerMeta(providerId: string): { name: string; logo: string; color: string } {
+  const known = PROVIDERS.find((p) => p.id === providerId);
+  if (known) return { name: known.name, logo: known.logo, color: known.color };
+  return EXTRA_PROVIDER_META[providerId] ?? EXTRA_PROVIDER_META.other;
+}
+
+function resolveProviderId(modelId: string, rawProvider: string): string {
+  const haystack = `${modelId} ${rawProvider}`;
+  for (const [providerId, pattern] of PROVIDER_MATCHERS) {
+    if (pattern.test(haystack)) return providerId;
+  }
+  return 'other';
+}
+
+export function inferCapabilities(modelId: string, modelName = '', raw?: PuterRawModel): Capability[] {
+  const haystack = `${modelId} ${modelName}`;
+  const caps = new Set<Capability>(['chat']);
+
+  for (const [capability, pattern] of CAPABILITY_MATCHERS) {
+    if (pattern.test(haystack)) caps.add(capability);
+  }
+
+  if (raw) {
+    const modalities = raw.input_modalities ?? raw.modalities;
+    if (Array.isArray(modalities)) {
+      const flat = modalities.map((m) => String(m).toLowerCase());
+      if (flat.includes('image')) caps.add('vision');
+      if (flat.includes('audio')) caps.add('audio');
+    }
+    if (raw.vision === true) caps.add('vision');
+    if (raw.reasoning === true) caps.add('reasoning');
+  }
+
+  return Array.from(caps);
+}
+
+function prettifyModelId(modelId: string): string {
+  const tail = modelId.includes('/') ? modelId.slice(modelId.lastIndexOf('/') + 1) : modelId;
+  const upper = new Set(['gpt', 'glm', 'vl', 'tts', 'sd', 'xl', 'ai', 'hd', 'o1', 'o3', 'o4', 'r1', 'qwq', 'llm']);
+  return tail
+    .split(/[-_.]/)
+    .filter(Boolean)
+    .map((word) => {
+      if (upper.has(word.toLowerCase())) return word.toUpperCase();
+      if (/^\d/.test(word)) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
+}
+
+/**
+ * Group the live puter.js model list into displayable providers.
+ * Falls back to an empty array when nothing usable was returned.
+ */
+export function buildProvidersFromRaw(raw: PuterRawModel[]): ProviderInfo[] {
+  const grouped = new Map<string, Map<string, ModelInfo>>();
+
+  for (const entry of raw) {
+    const id = String(entry?.id ?? '').trim();
+    if (!id) continue;
+
+    const providerId = resolveProviderId(id, typeof entry.provider === 'string' ? entry.provider : '');
+    const name = typeof entry.name === 'string' && entry.name.trim() ? entry.name.trim() : prettifyModelId(id);
+
+    if (!grouped.has(providerId)) grouped.set(providerId, new Map());
+    const bucket = grouped.get(providerId)!;
+    if (bucket.has(id)) continue;
+
+    bucket.set(id, {
+      id,
+      name,
+      provider: providerId,
+      capabilities: inferCapabilities(id, name, entry),
+      contextWindow: typeof entry.context === 'number' ? entry.context : undefined,
+    });
+  }
+
+  const preferredOrder = [...PROVIDERS.map((p) => p.id), ...Object.keys(EXTRA_PROVIDER_META)];
+  const rank = (providerId: string) => {
+    if (providerId === 'other') return Number.MAX_SAFE_INTEGER;
+    const index = preferredOrder.indexOf(providerId);
+    return index === -1 ? preferredOrder.length : index;
+  };
+
+  return Array.from(grouped.keys())
+    .sort((a, b) => rank(a) - rank(b) || a.localeCompare(b))
+    .map((providerId) => {
+      const meta = providerMeta(providerId);
+      const models = Array.from(grouped.get(providerId)!.values()).sort((a, b) => a.name.localeCompare(b.name));
+      return { id: providerId, name: meta.name, logo: meta.logo, color: meta.color, models };
+    });
+}
+
+/** Image models discovered in the live catalog, merged with the curated list. */
+export function mergeImageModelOptions(providers: ProviderInfo[]): MediaModelOption[] {
+  const seen = new Set(IMAGE_MODEL_OPTIONS.map((o) => o.id));
+  const extra: MediaModelOption[] = [];
+
+  for (const provider of providers) {
+    for (const model of provider.models) {
+      if (!model.capabilities.includes('image')) continue;
+      if (!/(image|img|dall-?e|flux|imagen|stable-?diffusion|sdxl|sd3|playground|ideogram|recraft|seedream|imagine|banana)/i.test(model.id)) continue;
+      if (seen.has(model.id)) continue;
+      seen.add(model.id);
+      extra.push({ id: model.id, label: model.name, note: provider.name });
+    }
+  }
+
+  return [...IMAGE_MODEL_OPTIONS, ...extra.slice(0, 24)];
+}

@@ -12,7 +12,7 @@ interface ChatSidebarProps {
 }
 
 export function ChatSidebar({ selectedConversationId, onSelectConversation, isOpen, onClose }: ChatSidebarProps) {
-  const { selectedModel, darkMode, setDarkMode } = useModel();
+  const { selectedModel, darkMode, setDarkMode, totalModels } = useModel();
   const [conversations, setConversations] = useState<StoredConversation[]>([]);
 
   useEffect(() => {
@@ -132,7 +132,7 @@ export function ChatSidebar({ selectedConversationId, onSelectConversation, isOp
           </Button>
         </div>
         <p className="text-[10px] text-purple-500/40 text-center">
-          puter.js · 350+ models · free · no API key
+          puter.js · {totalModels} models · free · no API key
         </p>
       </div>
     </aside>
