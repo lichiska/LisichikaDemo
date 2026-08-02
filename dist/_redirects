@@ -1,0 +1,3 @@
+# SPA fallback - serve index.html for all non-file routes
+# Static assets and prerendered pages are served directly by Cloudflare
+/* /index.html 200
