@@ -1,11 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Mic, Volume2, Wand2, Upload, Play, Pause, Download, Loader2, Music, AudioLines, Languages, Sparkles, Users, Radio, Headphones, Globe, Zap } from 'lucide-react';
+import { ArrowLeft, Mic, Volume2, Wand2, Upload, Play, Pause, Download, Loader2, Music, AudioLines, Languages, Sparkles, Users, Radio, Headphones, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -14,13 +13,7 @@ import { toast } from 'sonner';
 const ELEVENLABS_API_KEY = 'sk_55a4650c959426e2d090d08b6f959bdc5afbaa9a196c7548';
 const API_BASE = 'https://api.elevenlabs.io/v1';
 
-const IMAGES = {
-  mascot: 'https://mgx-backend-cdn.metadl.com/generate/images/1498224/2026-08-01/ttjdxryaajqq/mascot-foxy-artist-2026.png',
-  pattern: 'https://mgx-backend-cdn.metadl.com/generate/images/1498224/2026-08-01/ttjdzsacajqq/pattern-animation-tools-dark-2026.png',
-  aiBrain: 'https://mgx-backend-cdn.metadl.com/generate/images/1498224/2026-08-01/ttjdyyicajrq/ai-creative-brain-2026.png',
-};
-
-// ElevenLabs Logo SVG Component
+// ElevenLabs Logo SVG
 const ElevenLabsLogo = ({ className = '' }: { className?: string }) => (
   <svg viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path d="M31.5 0H38.5V65H31.5V0Z" fill="currentColor"/>
@@ -28,12 +21,65 @@ const ElevenLabsLogo = ({ className = '' }: { className?: string }) => (
   </svg>
 );
 
+// Mini icon components for each tool
+const TTSIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.5">
+    <path d="M12 18.5a6.5 6.5 0 006.5-6.5V6.5a6.5 6.5 0 00-13 0V12a6.5 6.5 0 006.5 6.5z" strokeLinecap="round"/>
+    <path d="M19 10v2a7 7 0 01-14 0v-2M12 18.5V22M8 22h8" strokeLinecap="round"/>
+    <path d="M3 7h2M3 12h2M19 7h2M19 12h2" strokeLinecap="round" opacity="0.5"/>
+  </svg>
+);
+
+const MusicIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.5">
+    <path d="M9 18V5l12-2v13" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+  </svg>
+);
+
+const SFXIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.5">
+    <path d="M2 12h2l3-8 4 16 4-12 3 6h4" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const CloneIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" strokeLinecap="round"/>
+    <path d="M16 3.13a4 4 0 010 7.75M21 21v-2a4 4 0 00-3-3.87" strokeLinecap="round" opacity="0.6"/>
+  </svg>
+);
+
+const DesignIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.5">
+    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const STTIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.5">
+    <path d="M4 7h16M4 12h10M4 17h14" strokeLinecap="round"/>
+    <circle cx="19" cy="12" r="2.5" fill="currentColor" opacity="0.4"/>
+  </svg>
+);
+
+const IsolationIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.5">
+    <path d="M3 18v-6a9 9 0 0118 0v6" strokeLinecap="round"/>
+    <path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3v5zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3v5z" strokeLinecap="round"/>
+  </svg>
+);
+
+const DubbingIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" strokeLinecap="round"/>
+  </svg>
+);
+
 interface Voice {
   voice_id: string;
   name: string;
   category?: string;
-  labels?: Record<string, string>;
-  preview_url?: string;
 }
 
 interface GeneratedAudio {
@@ -43,9 +89,35 @@ interface GeneratedAudio {
   type: string;
 }
 
+type ToolId = 'tts' | 'music' | 'sfx' | 'clone' | 'design' | 'stt' | 'isolation' | 'dubbing';
+
+interface ToolItem {
+  id: ToolId;
+  label: string;
+  icon: React.FC;
+  color: string;
+  bgColor: string;
+  description: string;
+}
+
+const tools: ToolItem[] = [
+  { id: 'tts', label: 'Text to Speech', icon: TTSIcon, color: 'text-cyan-400', bgColor: 'bg-cyan-500/10', description: 'Convert text into lifelike speech' },
+  { id: 'music', label: 'Music', icon: MusicIcon, color: 'text-pink-400', bgColor: 'bg-pink-500/10', description: 'Generate original music with lyrics' },
+  { id: 'sfx', label: 'Sound Effects', icon: SFXIcon, color: 'text-violet-400', bgColor: 'bg-violet-500/10', description: 'Create any sound from a description' },
+  { id: 'clone', label: 'Voice Clone', icon: CloneIcon, color: 'text-emerald-400', bgColor: 'bg-emerald-500/10', description: 'Clone a voice from audio samples' },
+  { id: 'design', label: 'Voice Design', icon: DesignIcon, color: 'text-amber-400', bgColor: 'bg-amber-500/10', description: 'Design new voices from scratch' },
+  { id: 'stt', label: 'Speech to Text', icon: STTIcon, color: 'text-orange-400', bgColor: 'bg-orange-500/10', description: 'Transcribe audio in 90+ languages' },
+  { id: 'isolation', label: 'Isolation', icon: IsolationIcon, color: 'text-sky-400', bgColor: 'bg-sky-500/10', description: 'Remove background noise' },
+  { id: 'dubbing', label: 'Dubbing', icon: DubbingIcon, color: 'text-rose-400', bgColor: 'bg-rose-500/10', description: 'Dub content into other languages' },
+];
+
 const ElevenLabs = () => {
+  const [activeTool, setActiveTool] = useState<ToolId>('tts');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // TTS state
   const [voices, setVoices] = useState<Voice[]>([]);
-  const [selectedVoice, setSelectedVoice] = useState<string>('');
+  const [selectedVoice, setSelectedVoice] = useState('');
   const [ttsText, setTtsText] = useState('');
   const [stability, setStability] = useState([0.5]);
   const [similarityBoost, setSimilarityBoost] = useState([0.75]);
@@ -57,18 +129,18 @@ const ElevenLabs = () => {
   const [voicesLoaded, setVoicesLoaded] = useState(false);
   const [selectedModel, setSelectedModel] = useState('eleven_multilingual_v2');
 
-  // Sound Effects state
+  // SFX state
   const [sfxText, setSfxText] = useState('');
   const [sfxDuration, setSfxDuration] = useState('');
   const [isGeneratingSfx, setIsGeneratingSfx] = useState(false);
 
-  // Voice Cloning state
+  // Clone state
   const [cloneName, setCloneName] = useState('');
   const [cloneDescription, setCloneDescription] = useState('');
   const [cloneFiles, setCloneFiles] = useState<File[]>([]);
   const [isCloning, setIsCloning] = useState(false);
 
-  // Speech-to-Text state
+  // STT state
   const [sttFile, setSttFile] = useState<File | null>(null);
   const [sttResult, setSttResult] = useState('');
   const [isTranscribing, setIsTranscribing] = useState(false);
@@ -81,7 +153,7 @@ const ElevenLabs = () => {
   const [vdText, setVdText] = useState('Hello! This is a preview of the generated voice.');
   const [isDesigning, setIsDesigning] = useState(false);
 
-  // Audio Isolation state
+  // Isolation state
   const [isolationFile, setIsolationFile] = useState<File | null>(null);
   const [isIsolating, setIsIsolating] = useState(false);
 
@@ -92,7 +164,7 @@ const ElevenLabs = () => {
   const [isDubbing, setIsDubbing] = useState(false);
   const [dubbingResult, setDubbingResult] = useState('');
 
-  // Music Generation state
+  // Music state
   const [musicPrompt, setMusicPrompt] = useState('');
   const [musicLyrics, setMusicLyrics] = useState('');
   const [musicDuration, setMusicDuration] = useState('30');
@@ -108,205 +180,151 @@ const ElevenLabs = () => {
   const isolationFileInputRef = useRef<HTMLInputElement | null>(null);
   const dubbingFileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [activeTab, setActiveTab] = useState('tts');
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      setMousePos({
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight,
-      });
-    };
-    window.addEventListener('mousemove', handleMouse);
-    return () => window.removeEventListener('mousemove', handleMouse);
-  }, []);
-
   const fetchVoices = async () => {
     if (voicesLoaded) return;
     setLoadingVoices(true);
     try {
-      const response = await fetch(`${API_BASE}/voices`, {
-        headers: { 'xi-api-key': ELEVENLABS_API_KEY },
-      });
-      if (!response.ok) throw new Error('Failed to fetch voices');
-      const data = await response.json();
+      const res = await fetch(`${API_BASE}/voices`, { headers: { 'xi-api-key': ELEVENLABS_API_KEY } });
+      if (!res.ok) throw new Error('Failed to fetch voices');
+      const data = await res.json();
       setVoices(data.voices || []);
-      if (data.voices?.length > 0) {
-        setSelectedVoice(data.voices[0].voice_id);
-      }
+      if (data.voices?.length > 0) setSelectedVoice(data.voices[0].voice_id);
       setVoicesLoaded(true);
-    } catch (err) {
-      toast.error('Failed to load voices. Check your API key.');
-      console.error(err);
-    } finally {
-      setLoadingVoices(false);
-    }
+    } catch { toast.error('Failed to load voices.'); }
+    finally { setLoadingVoices(false); }
   };
 
   const generateSpeech = async () => {
-    if (!ttsText.trim()) { toast.error('Please enter some text to convert to speech.'); return; }
-    if (!selectedVoice) { toast.error('Please select a voice first.'); return; }
+    if (!ttsText.trim()) { toast.error('Enter text first.'); return; }
+    if (!selectedVoice) { toast.error('Select a voice.'); return; }
     setIsGenerating(true);
     try {
-      const response = await fetch(`${API_BASE}/text-to-speech/${selectedVoice}`, {
-        method: 'POST',
-        headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: ttsText, model_id: selectedModel,
-          voice_settings: { stability: stability[0], similarity_boost: similarityBoost[0], style: style[0], use_speaker_boost: true },
-        }),
+      const res = await fetch(`${API_BASE}/text-to-speech/${selectedVoice}`, {
+        method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: ttsText, model_id: selectedModel, voice_settings: { stability: stability[0], similarity_boost: similarityBoost[0], style: style[0], use_speaker_boost: true } }),
       });
-      if (!response.ok) { const errData = await response.json().catch(() => ({})); throw new Error(errData?.detail?.message || 'Failed to generate speech'); }
-      const blob = await response.blob();
+      if (!res.ok) throw new Error('Generation failed');
+      const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      setGeneratedAudios((prev) => [{ url, filename: `speech_${Date.now()}.mp3`, timestamp: Date.now(), type: 'Speech' }, ...prev]);
-      toast.success('Speech generated successfully!');
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'Generation failed'); }
+      setGeneratedAudios(prev => [{ url, filename: `speech_${Date.now()}.mp3`, timestamp: Date.now(), type: 'Speech' }, ...prev]);
+      toast.success('Speech generated!');
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : 'Failed'); }
     finally { setIsGenerating(false); }
   };
 
   const generateSoundEffect = async () => {
-    if (!sfxText.trim()) { toast.error('Please describe the sound effect.'); return; }
+    if (!sfxText.trim()) { toast.error('Describe the sound.'); return; }
     setIsGeneratingSfx(true);
     try {
       const body: Record<string, unknown> = { text: sfxText };
       if (sfxDuration) body.duration_seconds = parseFloat(sfxDuration);
-      const response = await fetch(`${API_BASE}/sound-generation`, {
-        method: 'POST',
-        headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      if (!response.ok) { const errData = await response.json().catch(() => ({})); throw new Error(errData?.detail?.message || 'Failed to generate sound effect'); }
-      const blob = await response.blob();
+      const res = await fetch(`${API_BASE}/sound-generation`, { method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error('Failed');
+      const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      setGeneratedAudios((prev) => [{ url, filename: `sfx_${Date.now()}.mp3`, timestamp: Date.now(), type: 'Sound Effect' }, ...prev]);
-      toast.success('Sound effect generated!');
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'Generation failed'); }
+      setGeneratedAudios(prev => [{ url, filename: `sfx_${Date.now()}.mp3`, timestamp: Date.now(), type: 'SFX' }, ...prev]);
+      toast.success('Sound effect created!');
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : 'Failed'); }
     finally { setIsGeneratingSfx(false); }
   };
 
   const cloneVoice = async () => {
-    if (!cloneName.trim()) { toast.error('Please enter a name for the cloned voice.'); return; }
-    if (cloneFiles.length === 0) { toast.error('Please upload at least one audio sample.'); return; }
+    if (!cloneName.trim() || cloneFiles.length === 0) { toast.error('Name and samples required.'); return; }
     setIsCloning(true);
     try {
-      const formData = new FormData();
-      formData.append('name', cloneName);
-      formData.append('description', cloneDescription);
-      cloneFiles.forEach((file) => formData.append('files', file));
-      const response = await fetch(`${API_BASE}/voices/add`, {
-        method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY }, body: formData,
-      });
-      if (!response.ok) { const errData = await response.json().catch(() => ({})); throw new Error(errData?.detail?.message || 'Failed to clone voice'); }
-      toast.success(`Voice "${cloneName}" cloned successfully!`);
+      const fd = new FormData();
+      fd.append('name', cloneName); fd.append('description', cloneDescription);
+      cloneFiles.forEach(f => fd.append('files', f));
+      const res = await fetch(`${API_BASE}/voices/add`, { method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY }, body: fd });
+      if (!res.ok) throw new Error('Clone failed');
+      toast.success(`Voice "${cloneName}" cloned!`);
       setCloneName(''); setCloneDescription(''); setCloneFiles([]);
       setVoicesLoaded(false); fetchVoices();
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'Cloning failed'); }
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : 'Failed'); }
     finally { setIsCloning(false); }
   };
 
   const transcribeAudio = async () => {
-    if (!sttFile) { toast.error('Please upload an audio file to transcribe.'); return; }
+    if (!sttFile) { toast.error('Upload a file first.'); return; }
     setIsTranscribing(true);
     try {
-      const formData = new FormData();
-      formData.append('file', sttFile);
-      formData.append('model_id', 'scribe_v1');
-      const response = await fetch(`${API_BASE}/speech-to-text`, {
-        method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY }, body: formData,
-      });
-      if (!response.ok) { const errData = await response.json().catch(() => ({})); throw new Error(errData?.detail?.message || 'Transcription failed'); }
-      const data = await response.json();
+      const fd = new FormData(); fd.append('file', sttFile); fd.append('model_id', 'scribe_v1');
+      const res = await fetch(`${API_BASE}/speech-to-text`, { method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY }, body: fd });
+      if (!res.ok) throw new Error('Transcription failed');
+      const data = await res.json();
       setSttResult(data.text || JSON.stringify(data, null, 2));
       toast.success('Transcription complete!');
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'Transcription failed'); }
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : 'Failed'); }
     finally { setIsTranscribing(false); }
   };
 
   const designVoice = async () => {
-    if (!vdText.trim()) { toast.error('Please enter preview text.'); return; }
+    if (!vdText.trim()) { toast.error('Enter preview text.'); return; }
     setIsDesigning(true);
     try {
-      const response = await fetch(`${API_BASE}/voice-generation/generate-voice/preview`, {
-        method: 'POST',
-        headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          voice_description: `A ${vdAge} ${vdGender} with a ${vdAccent} accent`,
-          text: vdText, gender: vdGender, age: vdAge, accent: vdAccent, accent_strength: vdAccentStrength[0],
-        }),
+      const res = await fetch(`${API_BASE}/voice-generation/generate-voice/preview`, {
+        method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ voice_description: `A ${vdAge} ${vdGender} with a ${vdAccent} accent`, text: vdText, gender: vdGender, age: vdAge, accent: vdAccent, accent_strength: vdAccentStrength[0] }),
       });
-      if (!response.ok) { const errData = await response.json().catch(() => ({})); throw new Error(errData?.detail?.message || 'Voice design failed'); }
-      const blob = await response.blob();
+      if (!res.ok) throw new Error('Design failed');
+      const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      setGeneratedAudios((prev) => [{ url, filename: `voice_design_${Date.now()}.mp3`, timestamp: Date.now(), type: 'Voice Design' }, ...prev]);
-      toast.success('Voice design preview generated!');
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'Voice design failed'); }
+      setGeneratedAudios(prev => [{ url, filename: `voice_design_${Date.now()}.mp3`, timestamp: Date.now(), type: 'Voice Design' }, ...prev]);
+      toast.success('Voice preview generated!');
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : 'Failed'); }
     finally { setIsDesigning(false); }
   };
 
   const isolateAudio = async () => {
-    if (!isolationFile) { toast.error('Please upload an audio file.'); return; }
+    if (!isolationFile) { toast.error('Upload a file.'); return; }
     setIsIsolating(true);
     try {
-      const formData = new FormData();
-      formData.append('audio', isolationFile);
-      const response = await fetch(`${API_BASE}/audio-isolation`, {
-        method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY }, body: formData,
-      });
-      if (!response.ok) { const errData = await response.json().catch(() => ({})); throw new Error(errData?.detail?.message || 'Audio isolation failed'); }
-      const blob = await response.blob();
+      const fd = new FormData(); fd.append('audio', isolationFile);
+      const res = await fetch(`${API_BASE}/audio-isolation`, { method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY }, body: fd });
+      if (!res.ok) throw new Error('Isolation failed');
+      const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      setGeneratedAudios((prev) => [{ url, filename: `isolated_${Date.now()}.mp3`, timestamp: Date.now(), type: 'Isolated Audio' }, ...prev]);
-      toast.success('Audio isolated successfully!');
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'Isolation failed'); }
+      setGeneratedAudios(prev => [{ url, filename: `isolated_${Date.now()}.mp3`, timestamp: Date.now(), type: 'Isolated' }, ...prev]);
+      toast.success('Audio isolated!');
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : 'Failed'); }
     finally { setIsIsolating(false); }
   };
 
   const dubAudio = async () => {
-    if (!dubbingFile) { toast.error('Please upload an audio/video file to dub.'); return; }
+    if (!dubbingFile) { toast.error('Upload a file.'); return; }
     setIsDubbing(true); setDubbingResult('');
     try {
-      const formData = new FormData();
-      formData.append('file', dubbingFile);
-      formData.append('source_lang', dubbingSourceLang);
-      formData.append('target_lang', dubbingTargetLang);
-      formData.append('mode', 'automatic');
-      formData.append('num_speakers', '0');
-      const response = await fetch(`${API_BASE}/dubbing`, {
-        method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY }, body: formData,
-      });
-      if (!response.ok) { const errData = await response.json().catch(() => ({})); throw new Error(errData?.detail?.message || 'Dubbing failed'); }
-      const data = await response.json();
-      setDubbingResult(`Dubbing job started! ID: ${data.dubbing_id}\nExpected duration: ~${data.expected_duration_sec || 'unknown'}s\n\nThe dubbing is processing. Check status using the dubbing ID.`);
-      toast.success('Dubbing job submitted successfully!');
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'Dubbing failed'); }
+      const fd = new FormData();
+      fd.append('file', dubbingFile); fd.append('source_lang', dubbingSourceLang);
+      fd.append('target_lang', dubbingTargetLang); fd.append('mode', 'automatic'); fd.append('num_speakers', '0');
+      const res = await fetch(`${API_BASE}/dubbing`, { method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY }, body: fd });
+      if (!res.ok) throw new Error('Dubbing failed');
+      const data = await res.json();
+      setDubbingResult(`Dubbing started! ID: ${data.dubbing_id}`);
+      toast.success('Dubbing job submitted!');
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : 'Failed'); }
     finally { setIsDubbing(false); }
   };
 
   const generateMusic = async () => {
-    if (!musicPrompt.trim() && !musicLyrics.trim()) { toast.error('Please enter a music prompt or lyrics.'); return; }
+    if (!musicPrompt.trim() && !musicLyrics.trim()) { toast.error('Enter a prompt or lyrics.'); return; }
     setIsGeneratingMusic(true);
     try {
-      let fullPrompt = musicPrompt;
-      if (musicGenre && musicGenre !== 'any') fullPrompt += ` Genre: ${musicGenre}.`;
-      if (musicMood && musicMood !== 'any') fullPrompt += ` Mood: ${musicMood}.`;
-      if (musicTempo && musicTempo !== 'any') fullPrompt += ` Tempo: ${musicTempo}.`;
-      if (musicInstrumental) fullPrompt += ' Instrumental only, no vocals.';
-      if (musicLyrics.trim() && !musicInstrumental) fullPrompt += ` Lyrics: ${musicLyrics}`;
-      const body: Record<string, unknown> = { text: fullPrompt.trim() };
+      let prompt = musicPrompt;
+      if (musicGenre !== 'any') prompt += ` Genre: ${musicGenre}.`;
+      if (musicMood !== 'any') prompt += ` Mood: ${musicMood}.`;
+      if (musicTempo !== 'any') prompt += ` Tempo: ${musicTempo}.`;
+      if (musicInstrumental) prompt += ' Instrumental only.';
+      if (musicLyrics.trim() && !musicInstrumental) prompt += ` Lyrics: ${musicLyrics}`;
+      const body: Record<string, unknown> = { text: prompt.trim() };
       if (musicDuration) body.duration_seconds = parseFloat(musicDuration);
-      const response = await fetch(`${API_BASE}/sound-generation`, {
-        method: 'POST',
-        headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      if (!response.ok) { const errData = await response.json().catch(() => ({})); throw new Error(errData?.detail?.message || 'Music generation failed'); }
-      const blob = await response.blob();
+      const res = await fetch(`${API_BASE}/sound-generation`, { method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error('Music generation failed');
+      const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      setGeneratedAudios((prev) => [{ url, filename: `music_${musicGenre}_${Date.now()}.mp3`, timestamp: Date.now(), type: 'Music' }, ...prev]);
-      toast.success('Music generated successfully!');
-    } catch (err: unknown) { toast.error(err instanceof Error ? err.message : 'Music generation failed'); }
+      setGeneratedAudios(prev => [{ url, filename: `music_${Date.now()}.mp3`, timestamp: Date.now(), type: 'Music' }, ...prev]);
+      toast.success('Music generated!');
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : 'Failed'); }
     finally { setIsGeneratingMusic(false); }
   };
 
@@ -324,741 +342,456 @@ const ElevenLabs = () => {
     const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
   };
 
-  const tabItems = [
-    { value: 'tts', label: 'Text to Speech', icon: Volume2, color: 'text-cyan-400' },
-    { value: 'music', label: 'Music', icon: Music, color: 'text-pink-400' },
-    { value: 'sfx', label: 'Sound Effects', icon: Radio, color: 'text-purple-400' },
-    { value: 'clone', label: 'Voice Clone', icon: Users, color: 'text-emerald-400' },
-    { value: 'design', label: 'Voice Design', icon: Wand2, color: 'text-amber-400' },
-    { value: 'stt', label: 'Speech to Text', icon: Mic, color: 'text-orange-400' },
-    { value: 'isolation', label: 'Audio Isolation', icon: Headphones, color: 'text-sky-400' },
-    { value: 'dubbing', label: 'Dubbing', icon: Globe, color: 'text-rose-400' },
-  ];
+  const handleToolChange = (id: ToolId) => {
+    setActiveTool(id);
+    if (id === 'tts' || id === 'clone') fetchVoices();
+  };
+
+  const currentTool = tools.find(t => t.id === activeTool)!;
+
+  // Render content for each tool
+  const renderContent = () => {
+    switch (activeTool) {
+      case 'tts':
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              <div className="lg:col-span-3 space-y-4">
+                <div>
+                  <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Text</Label>
+                  <Textarea value={ttsText} onChange={(e) => setTtsText(e.target.value)} placeholder="Type or paste text to convert to speech..."
+                    className="min-h-[200px] bg-white/[0.02] border-white/[0.06] text-white/90 placeholder:text-white/15 resize-none focus:border-cyan-500/30 rounded-xl text-[14px] leading-relaxed" />
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-[10px] text-white/15 font-mono">{ttsText.length} characters</span>
+                  </div>
+                </div>
+                <Button onClick={generateSpeech} disabled={isGenerating || !ttsText.trim() || !selectedVoice}
+                  className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-cyan-500/20">
+                  {isGenerating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><AudioLines className="w-4 h-4 mr-2" />Generate Speech</>}
+                </Button>
+              </div>
+              <div className="lg:col-span-2 space-y-4">
+                <div>
+                  <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Voice</Label>
+                  {loadingVoices ? <div className="flex items-center gap-2 text-white/30 text-xs"><Loader2 className="w-3 h-3 animate-spin" />Loading...</div> : (
+                    <Select value={selectedVoice} onValueChange={setSelectedVoice}>
+                      <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue placeholder="Select voice" /></SelectTrigger>
+                      <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl max-h-[250px]">
+                        {voices.map(v => <SelectItem key={v.voice_id} value={v.voice_id} className="text-white/80 text-sm">{v.name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+                <div>
+                  <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Model</Label>
+                  <Select value={selectedModel} onValueChange={setSelectedModel}>
+                    <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                      <SelectItem value="eleven_multilingual_v2" className="text-white/80 text-sm">Multilingual v2</SelectItem>
+                      <SelectItem value="eleven_turbo_v2_5" className="text-white/80 text-sm">Turbo v2.5</SelectItem>
+                      <SelectItem value="eleven_turbo_v2" className="text-white/80 text-sm">Turbo v2</SelectItem>
+                      <SelectItem value="eleven_monolingual_v1" className="text-white/80 text-sm">English v1</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-3 pt-2">
+                  <div>
+                    <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Stability</Label><span className="text-[10px] text-cyan-400/70 font-mono">{stability[0].toFixed(2)}</span></div>
+                    <Slider value={stability} onValueChange={setStability} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-cyan-400 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Similarity</Label><span className="text-[10px] text-purple-400/70 font-mono">{similarityBoost[0].toFixed(2)}</span></div>
+                    <Slider value={similarityBoost} onValueChange={setSimilarityBoost} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-purple-400 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Style</Label><span className="text-[10px] text-pink-400/70 font-mono">{style[0].toFixed(2)}</span></div>
+                    <Slider value={style} onValueChange={setStyle} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-pink-400 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'music':
+        return (
+          <div className="space-y-5 max-w-3xl">
+            <div>
+              <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Prompt</Label>
+              <Textarea value={musicPrompt} onChange={(e) => setMusicPrompt(e.target.value)} placeholder="Describe the music you want to create..."
+                className="min-h-[100px] bg-white/[0.02] border-white/[0.06] text-white/90 placeholder:text-white/15 resize-none focus:border-pink-500/30 rounded-xl text-sm" />
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Genre</Label>
+                <Select value={musicGenre} onValueChange={setMusicGenre}>
+                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                    {['any','pop','rock','electronic','hip-hop','jazz','classical','ambient','lo-fi','cinematic'].map(g => <SelectItem key={g} value={g} className="text-white/80 text-sm capitalize">{g === 'any' ? 'Any' : g}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Mood</Label>
+                <Select value={musicMood} onValueChange={setMusicMood}>
+                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                    {['any','upbeat','sad','energetic','calm','dark','romantic','epic','dreamy'].map(m => <SelectItem key={m} value={m} className="text-white/80 text-sm capitalize">{m === 'any' ? 'Any' : m}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Tempo</Label>
+                <Select value={musicTempo} onValueChange={setMusicTempo}>
+                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                    {['any','slow','medium','fast','very fast'].map(t => <SelectItem key={t} value={t} className="text-white/80 text-sm capitalize">{t === 'any' ? 'Any' : t}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Label className="text-[11px] text-white/40">Duration (sec)</Label>
+                <Input type="number" value={musicDuration} onChange={(e) => setMusicDuration(e.target.value)} className="w-20 h-8 bg-white/[0.02] border-white/[0.06] text-white/80 rounded-lg text-sm" min="5" max="60" />
+              </div>
+              <div className="flex items-center gap-2">
+                <Label className="text-[11px] text-white/40">Instrumental</Label>
+                <Switch checked={musicInstrumental} onCheckedChange={setMusicInstrumental} />
+              </div>
+            </div>
+            {!musicInstrumental && (
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Lyrics</Label>
+                <Textarea value={musicLyrics} onChange={(e) => setMusicLyrics(e.target.value)} placeholder="[Verse 1]\nYour lyrics here..."
+                  className="min-h-[120px] bg-white/[0.02] border-white/[0.06] text-white/90 placeholder:text-white/15 resize-none focus:border-pink-500/30 rounded-xl font-mono text-sm" />
+              </div>
+            )}
+            <Button onClick={generateMusic} disabled={isGeneratingMusic || (!musicPrompt.trim() && !musicLyrics.trim())}
+              className="w-full bg-pink-500 hover:bg-pink-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-pink-500/20">
+              {isGeneratingMusic ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><Music className="w-4 h-4 mr-2" />Generate Music</>}
+            </Button>
+          </div>
+        );
+
+      case 'sfx':
+        return (
+          <div className="space-y-5 max-w-2xl">
+            <div>
+              <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Describe the Sound</Label>
+              <Textarea value={sfxText} onChange={(e) => setSfxText(e.target.value)} placeholder="e.g., Thunder with heavy rain, footsteps on gravel, sci-fi laser..."
+                className="min-h-[140px] bg-white/[0.02] border-white/[0.06] text-white/90 placeholder:text-white/15 resize-none focus:border-violet-500/30 rounded-xl text-sm" />
+            </div>
+            <div>
+              <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Duration</Label>
+              <div className="flex gap-2">
+                {['', '2', '5', '10', '15', '22'].map(d => (
+                  <Button key={d} variant="outline" size="sm" onClick={() => setSfxDuration(d)}
+                    className={`rounded-lg text-xs border transition-all ${sfxDuration === d ? 'bg-violet-500/15 text-violet-300 border-violet-500/30' : 'bg-transparent border-white/[0.06] text-white/40 hover:text-white/70 hover:bg-white/[0.03]'}`}>
+                    {d === '' ? 'Auto' : `${d}s`}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <Button onClick={generateSoundEffect} disabled={isGeneratingSfx || !sfxText.trim()}
+              className="w-full bg-violet-500 hover:bg-violet-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-violet-500/20">
+              {isGeneratingSfx ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><Sparkles className="w-4 h-4 mr-2" />Generate Sound</>}
+            </Button>
+          </div>
+        );
+
+      case 'clone':
+        return (
+          <div className="space-y-5 max-w-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Voice Name</Label>
+                <Input value={cloneName} onChange={(e) => setCloneName(e.target.value)} placeholder="My Custom Voice"
+                  className="bg-white/[0.02] border-white/[0.06] text-white/80 placeholder:text-white/15 rounded-xl h-9" />
+              </div>
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Description</Label>
+                <Input value={cloneDescription} onChange={(e) => setCloneDescription(e.target.value)} placeholder="Optional description"
+                  className="bg-white/[0.02] border-white/[0.06] text-white/80 placeholder:text-white/15 rounded-xl h-9" />
+              </div>
+            </div>
+            <div>
+              <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Audio Samples</Label>
+              <div onClick={() => fileInputRef.current?.click()}
+                className="border border-dashed border-white/[0.08] rounded-xl p-8 text-center cursor-pointer hover:border-emerald-500/30 hover:bg-emerald-500/[0.01] transition-all">
+                <Upload className="w-6 h-6 text-white/15 mx-auto mb-2" />
+                <p className="text-white/30 text-sm">Click to upload audio samples</p>
+                <p className="text-white/10 text-xs mt-1">MP3, WAV, M4A • 3+ samples recommended</p>
+                {cloneFiles.length > 0 && <div className="mt-3 space-y-0.5">{cloneFiles.map((f, i) => <p key={i} className="text-emerald-400/70 text-xs">{f.name}</p>)}</div>}
+              </div>
+              <input ref={fileInputRef} type="file" accept="audio/*" multiple className="hidden" onChange={(e) => { if (e.target.files) setCloneFiles(Array.from(e.target.files)); }} />
+            </div>
+            <Button onClick={cloneVoice} disabled={isCloning || !cloneName.trim() || cloneFiles.length === 0}
+              className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-emerald-500/20">
+              {isCloning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Cloning...</> : <><Wand2 className="w-4 h-4 mr-2" />Clone Voice</>}
+            </Button>
+          </div>
+        );
+
+      case 'design':
+        return (
+          <div className="space-y-5 max-w-2xl">
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Gender</Label>
+                <Select value={vdGender} onValueChange={setVdGender}>
+                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                    <SelectItem value="female" className="text-white/80 text-sm">Female</SelectItem>
+                    <SelectItem value="male" className="text-white/80 text-sm">Male</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Age</Label>
+                <Select value={vdAge} onValueChange={setVdAge}>
+                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                    <SelectItem value="young" className="text-white/80 text-sm">Young</SelectItem>
+                    <SelectItem value="middle_aged" className="text-white/80 text-sm">Middle Aged</SelectItem>
+                    <SelectItem value="old" className="text-white/80 text-sm">Old</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Accent</Label>
+                <Select value={vdAccent} onValueChange={setVdAccent}>
+                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                    {['american','british','australian','indian','african','irish'].map(a => <SelectItem key={a} value={a} className="text-white/80 text-sm capitalize">{a}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Accent Strength</Label><span className="text-[10px] text-amber-400/70 font-mono">{vdAccentStrength[0].toFixed(1)}</span></div>
+              <Slider value={vdAccentStrength} onValueChange={setVdAccentStrength} min={0.3} max={2.0} step={0.1} className="[&_[role=slider]]:bg-amber-400 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
+            </div>
+            <div>
+              <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Preview Text</Label>
+              <Textarea value={vdText} onChange={(e) => setVdText(e.target.value)} placeholder="Text to preview..."
+                className="min-h-[80px] bg-white/[0.02] border-white/[0.06] text-white/90 placeholder:text-white/15 resize-none focus:border-amber-500/30 rounded-xl text-sm" />
+            </div>
+            <Button onClick={designVoice} disabled={isDesigning || !vdText.trim()}
+              className="w-full bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-amber-500/20">
+              {isDesigning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Designing...</> : <><Sparkles className="w-4 h-4 mr-2" />Generate Voice</>}
+            </Button>
+          </div>
+        );
+
+      case 'stt':
+        return (
+          <div className="space-y-5 max-w-2xl">
+            <div>
+              <div onClick={() => sttFileInputRef.current?.click()}
+                className="border border-dashed border-white/[0.08] rounded-xl p-10 text-center cursor-pointer hover:border-orange-500/30 hover:bg-orange-500/[0.01] transition-all">
+                <Mic className="w-8 h-8 text-white/10 mx-auto mb-3" />
+                <p className="text-white/30 text-sm">Upload audio to transcribe</p>
+                <p className="text-white/10 text-xs mt-1">MP3, WAV, M4A, FLAC, OGG</p>
+                {sttFile && <p className="text-orange-400/70 text-xs mt-3">{sttFile.name}</p>}
+              </div>
+              <input ref={sttFileInputRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setSttFile(e.target.files[0]); }} />
+            </div>
+            <Button onClick={transcribeAudio} disabled={isTranscribing || !sttFile}
+              className="w-full bg-orange-500 hover:bg-orange-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-orange-500/20">
+              {isTranscribing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Transcribing...</> : <><Languages className="w-4 h-4 mr-2" />Transcribe</>}
+            </Button>
+            {sttResult && (
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                <p className="text-white/70 text-sm leading-relaxed whitespace-pre-wrap">{sttResult}</p>
+                <Button variant="ghost" size="sm" onClick={() => { navigator.clipboard.writeText(sttResult); toast.success('Copied!'); }}
+                  className="mt-2 text-white/25 hover:text-white text-xs">Copy</Button>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'isolation':
+        return (
+          <div className="space-y-5 max-w-2xl">
+            <div>
+              <div onClick={() => isolationFileInputRef.current?.click()}
+                className="border border-dashed border-white/[0.08] rounded-xl p-10 text-center cursor-pointer hover:border-sky-500/30 hover:bg-sky-500/[0.01] transition-all">
+                <Headphones className="w-8 h-8 text-white/10 mx-auto mb-3" />
+                <p className="text-white/30 text-sm">Upload audio with background noise</p>
+                <p className="text-white/10 text-xs mt-1">Isolates vocals from music/noise</p>
+                {isolationFile && <p className="text-sky-400/70 text-xs mt-3">{isolationFile.name}</p>}
+              </div>
+              <input ref={isolationFileInputRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setIsolationFile(e.target.files[0]); }} />
+            </div>
+            <Button onClick={isolateAudio} disabled={isIsolating || !isolationFile}
+              className="w-full bg-sky-500 hover:bg-sky-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-sky-500/20">
+              {isIsolating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Isolating...</> : <><Headphones className="w-4 h-4 mr-2" />Isolate Audio</>}
+            </Button>
+          </div>
+        );
+
+      case 'dubbing':
+        return (
+          <div className="space-y-5 max-w-2xl">
+            <div>
+              <div onClick={() => dubbingFileInputRef.current?.click()}
+                className="border border-dashed border-white/[0.08] rounded-xl p-10 text-center cursor-pointer hover:border-rose-500/30 hover:bg-rose-500/[0.01] transition-all">
+                <Globe className="w-8 h-8 text-white/10 mx-auto mb-3" />
+                <p className="text-white/30 text-sm">Upload audio or video to dub</p>
+                <p className="text-white/10 text-xs mt-1">MP3, WAV, MP4, MOV</p>
+                {dubbingFile && <p className="text-rose-400/70 text-xs mt-3">{dubbingFile.name}</p>}
+              </div>
+              <input ref={dubbingFileInputRef} type="file" accept="audio/*,video/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDubbingFile(e.target.files[0]); }} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Source Language</Label>
+                <Select value={dubbingSourceLang} onValueChange={setDubbingSourceLang}>
+                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                    {[['en','English'],['es','Spanish'],['fr','French'],['de','German'],['it','Italian'],['pt','Portuguese'],['ja','Japanese'],['ko','Korean'],['zh','Chinese'],['hi','Hindi'],['ar','Arabic'],['ru','Russian']].map(([v,l]) => <SelectItem key={v} value={v} className="text-white/80 text-sm">{l}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Target Language</Label>
+                <Select value={dubbingTargetLang} onValueChange={setDubbingTargetLang}>
+                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                    {[['en','English'],['es','Spanish'],['fr','French'],['de','German'],['it','Italian'],['pt','Portuguese'],['ja','Japanese'],['ko','Korean'],['zh','Chinese'],['hi','Hindi'],['ar','Arabic'],['ru','Russian'],['nl','Dutch'],['sv','Swedish']].map(([v,l]) => <SelectItem key={v} value={v} className="text-white/80 text-sm">{l}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <Button onClick={dubAudio} disabled={isDubbing || !dubbingFile}
+              className="w-full bg-rose-500 hover:bg-rose-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-rose-500/20">
+              {isDubbing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Starting...</> : <><Globe className="w-4 h-4 mr-2" />Start Dubbing</>}
+            </Button>
+            {dubbingResult && (
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                <p className="text-white/70 text-sm whitespace-pre-wrap">{dubbingResult}</p>
+              </div>
+            )}
+          </div>
+        );
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#060411] text-white overflow-x-hidden">
-      {/* Animated grain texture - same as landing */}
-      <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.025]" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-      }} />
-
-      {/* Floating particles */}
-      <div className="fixed inset-0 pointer-events-none z-[0] overflow-hidden">
-        {Array.from({ length: 15 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full animate-float-random"
-            style={{
-              width: `${Math.random() * 4 + 2}px`,
-              height: `${Math.random() * 4 + 2}px`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              background: ['#06b6d4', '#a855f7', '#ec4899', '#10b981', '#f59e0b'][Math.floor(Math.random() * 5)],
-              opacity: Math.random() * 0.4 + 0.1,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${Math.random() * 10 + 8}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Interactive gradient orb following mouse */}
-      <div
-        className="fixed w-[600px] h-[600px] rounded-full blur-[200px] opacity-10 transition-all duration-[3000ms] ease-out pointer-events-none z-0"
-        style={{
-          background: 'radial-gradient(circle, #06b6d4 0%, #a855f7 50%, #ec4899 100%)',
-          left: `${mousePos.x * 60}%`,
-          top: `${mousePos.y * 60}%`,
-        }}
-      />
-
-      {/* Background pattern layer */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03]">
-        <img src={IMAGES.pattern} alt="" className="w-full h-full object-cover" />
-      </div>
-
-      {/* Static gradient orbs */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[180px] opacity-8 bg-cyan-600 animate-pulse" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-[160px] opacity-8 bg-purple-600 animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/3 left-1/3 w-[300px] h-[300px] rounded-full blur-[140px] opacity-5 bg-pink-500 animate-pulse" style={{ animationDelay: '4s' }} />
-      </div>
-
-      {/* Navigation - matching app style */}
-      <nav className="fixed top-0 w-full z-50 bg-[#060411]/80 backdrop-blur-xl border-b border-white/[0.03]">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link
-              to="/ai"
-              className="flex items-center gap-2 text-white/40 hover:text-white transition-colors group"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-[13px] font-medium tracking-wide">AI TOOLS</span>
-            </Link>
-            <div className="w-px h-5 bg-white/10" />
-            <div className="flex items-center gap-3 group cursor-default">
-              <img
-                src={IMAGES.mascot}
-                alt="Foxy"
-                className="w-9 h-9 object-contain group-hover:rotate-12 transition-transform duration-300"
-              />
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold tracking-tight" style={{ fontFamily: 'Fredoka' }}>
-                  <span className="text-orange-400">Foxy</span>{' '}
-                  <span className="text-white/80">×</span>
-                </span>
-                <ElevenLabsLogo className="w-5 h-5 text-white/90" />
-                <span className="text-lg font-bold text-white/90" style={{ fontFamily: 'Fredoka' }}>ElevenLabs</span>
-              </div>
-            </div>
+    <div className="flex h-screen bg-[#060411] text-white overflow-hidden">
+      {/* Dynamic Sidebar */}
+      <aside className={`${sidebarCollapsed ? 'w-[68px]' : 'w-[240px]'} h-full border-r border-white/[0.04] bg-[#080515] flex flex-col transition-all duration-300 ease-in-out shrink-0`}>
+        {/* Sidebar Header */}
+        <div className="p-4 border-b border-white/[0.04] flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-white/[0.05] flex items-center justify-center shrink-0">
+            <ElevenLabsLogo className="w-4 h-4 text-white/80" />
           </div>
-          <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20">
-            <Zap className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="text-xs font-bold text-cyan-300 tracking-wide">8 AI AUDIO TOOLS</span>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="relative z-10 pt-28 pb-8 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center animate-slide-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] mb-8">
-              <ElevenLabsLogo className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs font-bold text-white/50 tracking-wide">POWERED BY ELEVENLABS API</span>
-            </div>
-            <h1 className="text-[clamp(2.5rem,6vw,5rem)] font-black leading-[0.88] tracking-tight mb-6" style={{ fontFamily: 'Fredoka' }}>
-              <span className="block text-white">AI-Powered</span>
-              <span className="block bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient-shift">
-                Audio Studio.
-              </span>
-            </h1>
-            <p className="text-white/35 text-lg max-w-2xl mx-auto leading-relaxed mb-4">
-              Generate lifelike speech, create music with lyrics, clone voices, design new voices,
-              produce sound effects, isolate audio, dub content, and transcribe — all in one place.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="relative z-10 py-6 px-6">
-        <div className="max-w-6xl mx-auto">
-          <Tabs value={activeTab} onValueChange={(val) => { setActiveTab(val); if (val === 'tts' || val === 'clone') fetchVoices(); }} className="w-full">
-            {/* Tab Navigation */}
-            <div className="overflow-x-auto pb-3 mb-8 -mx-2 px-2 animate-slide-up" style={{ animationDelay: '150ms' }}>
-              <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-8 bg-white/[0.02] border border-white/[0.06] rounded-2xl p-1.5 gap-1">
-                {tabItems.map((tab) => (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className={`rounded-xl data-[state=active]:bg-white/[0.08] data-[state=active]:border-white/[0.1] data-[state=active]:shadow-lg text-white/40 font-medium text-[11px] gap-1.5 whitespace-nowrap px-3 py-2.5 transition-all duration-300 border border-transparent hover:bg-white/[0.03]`}
-                  >
-                    <tab.icon className={`w-3.5 h-3.5 ${activeTab === tab.value ? tab.color : ''}`} />
-                    <span className={activeTab === tab.value ? tab.color : ''}>{tab.label}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
-
-            {/* TEXT TO SPEECH */}
-            <TabsContent value="tts" className="space-y-6 animate-fade-in">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 space-y-5">
-                  <div className="p-7 rounded-2xl bg-gradient-to-br from-cyan-500/[0.04] to-purple-500/[0.02] border border-white/[0.06] hover:border-cyan-500/20 transition-all duration-500">
-                    <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-3 block">Enter Text</Label>
-                    <Textarea
-                      value={ttsText}
-                      onChange={(e) => setTtsText(e.target.value)}
-                      placeholder="Type or paste the text you want to convert to speech..."
-                      className="min-h-[180px] bg-white/[0.02] border-white/[0.06] text-white placeholder:text-white/20 resize-none focus:border-cyan-500/40 rounded-xl text-sm"
-                    />
-                    <div className="flex justify-between items-center mt-4">
-                      <span className="text-[11px] text-white/25 font-mono">{ttsText.length} chars</span>
-                      <Button
-                        onClick={generateSpeech}
-                        disabled={isGenerating || !ttsText.trim() || !selectedVoice}
-                        className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-7 py-2.5 rounded-xl hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/20 transition-all"
-                      >
-                        {isGenerating ? (
-                          <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</>
-                        ) : (
-                          <><AudioLines className="w-4 h-4 mr-2" />Generate Speech</>
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-5">
-                  <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-4 hover:border-white/[0.1] transition-all duration-500">
-                    <div>
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Voice</Label>
-                      {loadingVoices ? (
-                        <div className="flex items-center gap-2 text-white/40 text-sm"><Loader2 className="w-4 h-4 animate-spin" />Loading...</div>
-                      ) : (
-                        <Select value={selectedVoice} onValueChange={setSelectedVoice}>
-                          <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white rounded-xl"><SelectValue placeholder="Select a voice" /></SelectTrigger>
-                          <SelectContent className="bg-[#0d0a1a] border-white/[0.1] rounded-xl max-h-[300px]">
-                            {voices.map((voice) => (
-                              <SelectItem key={voice.voice_id} value={voice.voice_id} className="text-white hover:bg-white/[0.05]">
-                                {voice.name} {voice.category ? `(${voice.category})` : ''}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    </div>
-
-                    <div>
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Model</Label>
-                      <Select value={selectedModel} onValueChange={setSelectedModel}>
-                        <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white rounded-xl"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-[#0d0a1a] border-white/[0.1] rounded-xl">
-                          <SelectItem value="eleven_multilingual_v2" className="text-white hover:bg-white/[0.05]">Multilingual v2 (29 langs)</SelectItem>
-                          <SelectItem value="eleven_turbo_v2_5" className="text-white hover:bg-white/[0.05]">Turbo v2.5 (Fastest)</SelectItem>
-                          <SelectItem value="eleven_turbo_v2" className="text-white hover:bg-white/[0.05]">Turbo v2</SelectItem>
-                          <SelectItem value="eleven_monolingual_v1" className="text-white hover:bg-white/[0.05]">English v1</SelectItem>
-                          <SelectItem value="eleven_multilingual_v1" className="text-white hover:bg-white/[0.05]">Multilingual v1</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label className="text-white/40 text-[11px] font-medium mb-1.5 block">Stability: <span className="text-cyan-400">{stability[0].toFixed(2)}</span></Label>
-                      <Slider value={stability} onValueChange={setStability} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-cyan-400" />
-                    </div>
-                    <div>
-                      <Label className="text-white/40 text-[11px] font-medium mb-1.5 block">Similarity: <span className="text-purple-400">{similarityBoost[0].toFixed(2)}</span></Label>
-                      <Slider value={similarityBoost} onValueChange={setSimilarityBoost} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-purple-400" />
-                    </div>
-                    <div>
-                      <Label className="text-white/40 text-[11px] font-medium mb-1.5 block">Style: <span className="text-pink-400">{style[0].toFixed(2)}</span></Label>
-                      <Slider value={style} onValueChange={setStyle} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-pink-400" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* MUSIC GENERATION */}
-            <TabsContent value="music" className="space-y-6 animate-fade-in">
-              <div className="max-w-3xl mx-auto">
-                <div className="p-8 rounded-2xl bg-gradient-to-br from-pink-500/[0.04] to-purple-500/[0.02] border border-white/[0.06] hover:border-pink-500/20 transition-all duration-500 space-y-6">
-                  <div className="text-center mb-2">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                      <Music className="w-8 h-8 text-pink-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold" style={{ fontFamily: 'Fredoka' }}>
-                      <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">AI Music Generation</span>
-                    </h3>
-                    <p className="text-white/30 text-sm mt-1">Create original music — add lyrics, choose genre, mood, and tempo</p>
-                  </div>
-
-                  <div>
-                    <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Music Prompt</Label>
-                    <Textarea
-                      value={musicPrompt}
-                      onChange={(e) => setMusicPrompt(e.target.value)}
-                      placeholder="e.g., An upbeat electronic dance track with synth pads, driving bass, and energetic drums..."
-                      className="min-h-[100px] bg-white/[0.02] border-white/[0.06] text-white placeholder:text-white/20 resize-none focus:border-pink-500/40 rounded-xl text-sm"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Genre</Label>
-                      <Select value={musicGenre} onValueChange={setMusicGenre}>
-                        <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white rounded-xl"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-[#0d0a1a] border-white/[0.1] rounded-xl">
-                          {['any', 'pop', 'rock', 'electronic', 'hip-hop', 'jazz', 'classical', 'r&b', 'country', 'ambient', 'metal', 'folk', 'reggae', 'latin', 'lo-fi', 'cinematic'].map(g => (
-                            <SelectItem key={g} value={g} className="text-white hover:bg-white/[0.05] capitalize">{g === 'any' ? 'Any Genre' : g.charAt(0).toUpperCase() + g.slice(1)}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Mood</Label>
-                      <Select value={musicMood} onValueChange={setMusicMood}>
-                        <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white rounded-xl"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-[#0d0a1a] border-white/[0.1] rounded-xl">
-                          {['any', 'upbeat', 'sad', 'energetic', 'calm', 'dark', 'romantic', 'epic', 'mysterious', 'aggressive', 'dreamy', 'nostalgic', 'playful'].map(m => (
-                            <SelectItem key={m} value={m} className="text-white hover:bg-white/[0.05] capitalize">{m === 'any' ? 'Any Mood' : m.charAt(0).toUpperCase() + m.slice(1)}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Tempo</Label>
-                      <Select value={musicTempo} onValueChange={setMusicTempo}>
-                        <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white rounded-xl"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-[#0d0a1a] border-white/[0.1] rounded-xl">
-                          <SelectItem value="any" className="text-white hover:bg-white/[0.05]">Any Tempo</SelectItem>
-                          <SelectItem value="very slow" className="text-white hover:bg-white/[0.05]">Very Slow (60-80 BPM)</SelectItem>
-                          <SelectItem value="slow" className="text-white hover:bg-white/[0.05]">Slow (80-100 BPM)</SelectItem>
-                          <SelectItem value="medium" className="text-white hover:bg-white/[0.05]">Medium (100-120 BPM)</SelectItem>
-                          <SelectItem value="fast" className="text-white hover:bg-white/[0.05]">Fast (120-140 BPM)</SelectItem>
-                          <SelectItem value="very fast" className="text-white hover:bg-white/[0.05]">Very Fast (140+ BPM)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase">Lyrics</Label>
-                      <div className="flex items-center gap-2">
-                        <Label className="text-white/30 text-xs">Instrumental only</Label>
-                        <Switch checked={musicInstrumental} onCheckedChange={setMusicInstrumental} />
-                      </div>
-                    </div>
-                    {!musicInstrumental && (
-                      <Textarea
-                        value={musicLyrics}
-                        onChange={(e) => setMusicLyrics(e.target.value)}
-                        placeholder={"[Verse 1]\nWrite your lyrics here...\n\n[Chorus]\nThe catchy part goes here..."}
-                        className="min-h-[120px] bg-white/[0.02] border-white/[0.06] text-white placeholder:text-white/20 resize-none focus:border-pink-500/40 rounded-xl font-mono text-sm"
-                      />
-                    )}
-                  </div>
-
-                  <div>
-                    <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Duration</Label>
-                    <div className="flex gap-2 flex-wrap">
-                      {['10', '15', '22', '30'].map((d) => (
-                        <Button
-                          key={d}
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setMusicDuration(d)}
-                          className={`rounded-xl border transition-all ${musicDuration === d ? 'bg-pink-500/15 text-pink-300 border-pink-500/30 shadow-lg shadow-pink-500/10' : 'bg-white/[0.02] border-white/[0.06] text-white/40 hover:text-white hover:bg-white/[0.05] hover:border-white/[0.12]'}`}
-                        >
-                          {d}s
-                        </Button>
-                      ))}
-                      <Input
-                        type="number"
-                        value={musicDuration}
-                        onChange={(e) => setMusicDuration(e.target.value)}
-                        className="w-20 bg-white/[0.02] border-white/[0.06] text-white text-sm rounded-xl"
-                        min="1" max="60"
-                      />
-                    </div>
-                  </div>
-
-                  <Button
-                    onClick={generateMusic}
-                    disabled={isGeneratingMusic || (!musicPrompt.trim() && !musicLyrics.trim())}
-                    className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-bold py-3 rounded-xl hover:scale-[1.02] hover:shadow-xl hover:shadow-pink-500/20 transition-all"
-                  >
-                    {isGeneratingMusic ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating Music...</>) : (<><Music className="w-4 h-4 mr-2" />Generate Music</>)}
-                  </Button>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* SOUND EFFECTS */}
-            <TabsContent value="sfx" className="space-y-6 animate-fade-in">
-              <div className="max-w-2xl mx-auto">
-                <div className="p-8 rounded-2xl bg-gradient-to-br from-purple-500/[0.04] to-indigo-500/[0.02] border border-white/[0.06] hover:border-purple-500/20 transition-all duration-500 space-y-5">
-                  <div className="text-center mb-2">
-                    <div className="w-16 h-16 rounded-2xl bg-purple-500/15 flex items-center justify-center mx-auto mb-3">
-                      <Radio className="w-8 h-8 text-purple-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold" style={{ fontFamily: 'Fredoka' }}>
-                      <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">AI Sound Effects</span>
-                    </h3>
-                    <p className="text-white/30 text-sm mt-1">Describe any sound and AI will generate it instantly</p>
-                  </div>
-
-                  <div>
-                    <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Describe the Sound</Label>
-                    <Textarea
-                      value={sfxText}
-                      onChange={(e) => setSfxText(e.target.value)}
-                      placeholder="e.g., A thunderstorm with heavy rain and distant thunder, footsteps on gravel, sci-fi laser blast..."
-                      className="min-h-[120px] bg-white/[0.02] border-white/[0.06] text-white placeholder:text-white/20 resize-none focus:border-purple-500/40 rounded-xl text-sm"
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Duration</Label>
-                    <div className="flex gap-2 flex-wrap">
-                      {['2', '5', '10', '15', '22'].map((d) => (
-                        <Button key={d} variant="outline" size="sm" onClick={() => setSfxDuration(d)}
-                          className={`rounded-xl border transition-all ${sfxDuration === d ? 'bg-purple-500/15 text-purple-300 border-purple-500/30' : 'bg-white/[0.02] border-white/[0.06] text-white/40 hover:text-white hover:bg-white/[0.05]'}`}
-                        >{d}s</Button>
-                      ))}
-                      <Button variant="outline" size="sm" onClick={() => setSfxDuration('')}
-                        className={`rounded-xl border transition-all ${sfxDuration === '' ? 'bg-purple-500/15 text-purple-300 border-purple-500/30' : 'bg-white/[0.02] border-white/[0.06] text-white/40 hover:text-white hover:bg-white/[0.05]'}`}
-                      >Auto</Button>
-                    </div>
-                  </div>
-
-                  <Button onClick={generateSoundEffect} disabled={isGeneratingSfx || !sfxText.trim()}
-                    className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-bold rounded-xl hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/20 transition-all"
-                  >
-                    {isGeneratingSfx ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</>) : (<><Sparkles className="w-4 h-4 mr-2" />Generate Sound Effect</>)}
-                  </Button>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* VOICE CLONING */}
-            <TabsContent value="clone" className="space-y-6 animate-fade-in">
-              <div className="max-w-2xl mx-auto">
-                <div className="p-8 rounded-2xl bg-gradient-to-br from-emerald-500/[0.04] to-teal-500/[0.02] border border-white/[0.06] hover:border-emerald-500/20 transition-all duration-500 space-y-5">
-                  <div className="text-center mb-2">
-                    <div className="w-16 h-16 rounded-2xl bg-emerald-500/15 flex items-center justify-center mx-auto mb-3">
-                      <Users className="w-8 h-8 text-emerald-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold" style={{ fontFamily: 'Fredoka' }}>
-                      <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Instant Voice Cloning</span>
-                    </h3>
-                    <p className="text-white/30 text-sm mt-1">Upload audio samples to create a custom voice clone</p>
-                  </div>
-
-                  <div>
-                    <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Voice Name</Label>
-                    <Input value={cloneName} onChange={(e) => setCloneName(e.target.value)} placeholder="e.g., My Custom Voice"
-                      className="bg-white/[0.02] border-white/[0.06] text-white placeholder:text-white/20 focus:border-emerald-500/40 rounded-xl" />
-                  </div>
-                  <div>
-                    <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Description</Label>
-                    <Input value={cloneDescription} onChange={(e) => setCloneDescription(e.target.value)} placeholder="Describe the voice..."
-                      className="bg-white/[0.02] border-white/[0.06] text-white placeholder:text-white/20 focus:border-emerald-500/40 rounded-xl" />
-                  </div>
-                  <div>
-                    <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Audio Samples</Label>
-                    <div onClick={() => fileInputRef.current?.click()}
-                      className="border-2 border-dashed border-white/[0.08] rounded-2xl p-8 text-center cursor-pointer hover:border-emerald-500/30 hover:bg-emerald-500/[0.02] transition-all">
-                      <Upload className="w-8 h-8 text-white/20 mx-auto mb-2" />
-                      <p className="text-white/35 text-sm">Click to upload audio files</p>
-                      <p className="text-white/15 text-xs mt-1">MP3, WAV, M4A • Best with 3+ samples of 1-2 min each</p>
-                      {cloneFiles.length > 0 && (
-                        <div className="mt-3 space-y-1">{cloneFiles.map((f, i) => (<p key={i} className="text-emerald-400 text-xs">{f.name}</p>))}</div>
-                      )}
-                    </div>
-                    <input ref={fileInputRef} type="file" accept="audio/*" multiple className="hidden"
-                      onChange={(e) => { if (e.target.files) setCloneFiles(Array.from(e.target.files)); }} />
-                  </div>
-                  <Button onClick={cloneVoice} disabled={isCloning || !cloneName.trim() || cloneFiles.length === 0}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold rounded-xl hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/20 transition-all"
-                  >
-                    {isCloning ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Cloning...</>) : (<><Wand2 className="w-4 h-4 mr-2" />Clone Voice</>)}
-                  </Button>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* VOICE DESIGN */}
-            <TabsContent value="design" className="space-y-6 animate-fade-in">
-              <div className="max-w-2xl mx-auto">
-                <div className="p-8 rounded-2xl bg-gradient-to-br from-amber-500/[0.04] to-orange-500/[0.02] border border-white/[0.06] hover:border-amber-500/20 transition-all duration-500 space-y-5">
-                  <div className="text-center mb-2">
-                    <div className="w-16 h-16 rounded-2xl bg-amber-500/15 flex items-center justify-center mx-auto mb-3">
-                      <Wand2 className="w-8 h-8 text-amber-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold" style={{ fontFamily: 'Fredoka' }}>
-                      <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">Voice Design Lab</span>
-                    </h3>
-                    <p className="text-white/30 text-sm mt-1">Create entirely new synthetic voices from scratch</p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Gender</Label>
-                      <Select value={vdGender} onValueChange={setVdGender}>
-                        <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white rounded-xl"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-[#0d0a1a] border-white/[0.1] rounded-xl">
-                          <SelectItem value="female" className="text-white hover:bg-white/[0.05]">Female</SelectItem>
-                          <SelectItem value="male" className="text-white hover:bg-white/[0.05]">Male</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Age</Label>
-                      <Select value={vdAge} onValueChange={setVdAge}>
-                        <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white rounded-xl"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-[#0d0a1a] border-white/[0.1] rounded-xl">
-                          <SelectItem value="young" className="text-white hover:bg-white/[0.05]">Young</SelectItem>
-                          <SelectItem value="middle_aged" className="text-white hover:bg-white/[0.05]">Middle Aged</SelectItem>
-                          <SelectItem value="old" className="text-white hover:bg-white/[0.05]">Old</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Accent</Label>
-                      <Select value={vdAccent} onValueChange={setVdAccent}>
-                        <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white rounded-xl"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-[#0d0a1a] border-white/[0.1] rounded-xl">
-                          {['american', 'british', 'australian', 'indian', 'african', 'irish', 'italian', 'swedish'].map(a => (
-                            <SelectItem key={a} value={a} className="text-white hover:bg-white/[0.05] capitalize">{a.charAt(0).toUpperCase() + a.slice(1)}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label className="text-white/40 text-[11px] font-medium mb-1.5 block">Accent Strength: <span className="text-amber-400">{vdAccentStrength[0].toFixed(1)}</span></Label>
-                    <Slider value={vdAccentStrength} onValueChange={setVdAccentStrength} min={0.3} max={2.0} step={0.1} className="[&_[role=slider]]:bg-amber-400" />
-                  </div>
-
-                  <div>
-                    <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Preview Text</Label>
-                    <Textarea value={vdText} onChange={(e) => setVdText(e.target.value)} placeholder="Enter text to preview..."
-                      className="min-h-[80px] bg-white/[0.02] border-white/[0.06] text-white placeholder:text-white/20 resize-none focus:border-amber-500/40 rounded-xl text-sm" />
-                  </div>
-
-                  <Button onClick={designVoice} disabled={isDesigning || !vdText.trim()}
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold rounded-xl hover:scale-[1.02] hover:shadow-xl hover:shadow-amber-500/20 transition-all"
-                  >
-                    {isDesigning ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Designing...</>) : (<><Sparkles className="w-4 h-4 mr-2" />Generate Voice Preview</>)}
-                  </Button>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* SPEECH TO TEXT */}
-            <TabsContent value="stt" className="space-y-6 animate-fade-in">
-              <div className="max-w-2xl mx-auto">
-                <div className="p-8 rounded-2xl bg-gradient-to-br from-orange-500/[0.04] to-red-500/[0.02] border border-white/[0.06] hover:border-orange-500/20 transition-all duration-500 space-y-5">
-                  <div className="text-center mb-2">
-                    <div className="w-16 h-16 rounded-2xl bg-orange-500/15 flex items-center justify-center mx-auto mb-3">
-                      <Mic className="w-8 h-8 text-orange-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold" style={{ fontFamily: 'Fredoka' }}>
-                      <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">Speech to Text</span>
-                    </h3>
-                    <p className="text-white/30 text-sm mt-1">Transcribe audio files with high accuracy in 90+ languages</p>
-                  </div>
-
-                  <div>
-                    <div onClick={() => sttFileInputRef.current?.click()}
-                      className="border-2 border-dashed border-white/[0.08] rounded-2xl p-8 text-center cursor-pointer hover:border-orange-500/30 hover:bg-orange-500/[0.02] transition-all">
-                      <Upload className="w-8 h-8 text-white/20 mx-auto mb-2" />
-                      <p className="text-white/35 text-sm">Click to upload an audio file</p>
-                      <p className="text-white/15 text-xs mt-1">MP3, WAV, M4A, FLAC, OGG, WEBM</p>
-                      {sttFile && <p className="text-orange-400 text-xs mt-3">{sttFile.name}</p>}
-                    </div>
-                    <input ref={sttFileInputRef} type="file" accept="audio/*" className="hidden"
-                      onChange={(e) => { if (e.target.files?.[0]) setSttFile(e.target.files[0]); }} />
-                  </div>
-
-                  <Button onClick={transcribeAudio} disabled={isTranscribing || !sttFile}
-                    className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white font-bold rounded-xl hover:scale-[1.02] hover:shadow-xl hover:shadow-orange-500/20 transition-all"
-                  >
-                    {isTranscribing ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Transcribing...</>) : (<><Languages className="w-4 h-4 mr-2" />Transcribe Audio</>)}
-                  </Button>
-
-                  {sttResult && (
-                    <div className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Result</Label>
-                      <p className="text-white/75 text-sm leading-relaxed whitespace-pre-wrap">{sttResult}</p>
-                      <Button variant="ghost" size="sm" onClick={() => { navigator.clipboard.writeText(sttResult); toast.success('Copied!'); }}
-                        className="mt-3 text-white/30 hover:text-white text-xs">Copy to clipboard</Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* AUDIO ISOLATION */}
-            <TabsContent value="isolation" className="space-y-6 animate-fade-in">
-              <div className="max-w-2xl mx-auto">
-                <div className="p-8 rounded-2xl bg-gradient-to-br from-sky-500/[0.04] to-blue-500/[0.02] border border-white/[0.06] hover:border-sky-500/20 transition-all duration-500 space-y-5">
-                  <div className="text-center mb-2">
-                    <div className="w-16 h-16 rounded-2xl bg-sky-500/15 flex items-center justify-center mx-auto mb-3">
-                      <Headphones className="w-8 h-8 text-sky-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold" style={{ fontFamily: 'Fredoka' }}>
-                      <span className="bg-gradient-to-r from-sky-400 to-blue-400 bg-clip-text text-transparent">Audio Isolation</span>
-                    </h3>
-                    <p className="text-white/30 text-sm mt-1">Remove background noise and isolate vocals from any audio</p>
-                  </div>
-
-                  <div>
-                    <div onClick={() => isolationFileInputRef.current?.click()}
-                      className="border-2 border-dashed border-white/[0.08] rounded-2xl p-8 text-center cursor-pointer hover:border-sky-500/30 hover:bg-sky-500/[0.02] transition-all">
-                      <Upload className="w-8 h-8 text-white/20 mx-auto mb-2" />
-                      <p className="text-white/35 text-sm">Upload audio with background noise</p>
-                      <p className="text-white/15 text-xs mt-1">MP3, WAV, M4A • Isolates voice from music/noise</p>
-                      {isolationFile && <p className="text-sky-400 text-xs mt-3">{isolationFile.name}</p>}
-                    </div>
-                    <input ref={isolationFileInputRef} type="file" accept="audio/*" className="hidden"
-                      onChange={(e) => { if (e.target.files?.[0]) setIsolationFile(e.target.files[0]); }} />
-                  </div>
-
-                  <Button onClick={isolateAudio} disabled={isIsolating || !isolationFile}
-                    className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold rounded-xl hover:scale-[1.02] hover:shadow-xl hover:shadow-sky-500/20 transition-all"
-                  >
-                    {isIsolating ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Isolating...</>) : (<><Headphones className="w-4 h-4 mr-2" />Isolate Vocals</>)}
-                  </Button>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* DUBBING */}
-            <TabsContent value="dubbing" className="space-y-6 animate-fade-in">
-              <div className="max-w-2xl mx-auto">
-                <div className="p-8 rounded-2xl bg-gradient-to-br from-rose-500/[0.04] to-pink-500/[0.02] border border-white/[0.06] hover:border-rose-500/20 transition-all duration-500 space-y-5">
-                  <div className="text-center mb-2">
-                    <div className="w-16 h-16 rounded-2xl bg-rose-500/15 flex items-center justify-center mx-auto mb-3">
-                      <Globe className="w-8 h-8 text-rose-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold" style={{ fontFamily: 'Fredoka' }}>
-                      <span className="bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">AI Dubbing</span>
-                    </h3>
-                    <p className="text-white/30 text-sm mt-1">Automatically dub audio/video content into other languages</p>
-                  </div>
-
-                  <div>
-                    <div onClick={() => dubbingFileInputRef.current?.click()}
-                      className="border-2 border-dashed border-white/[0.08] rounded-2xl p-8 text-center cursor-pointer hover:border-rose-500/30 hover:bg-rose-500/[0.02] transition-all">
-                      <Upload className="w-8 h-8 text-white/20 mx-auto mb-2" />
-                      <p className="text-white/35 text-sm">Upload audio or video file</p>
-                      <p className="text-white/15 text-xs mt-1">MP3, WAV, MP4, MOV, MKV</p>
-                      {dubbingFile && <p className="text-rose-400 text-xs mt-3">{dubbingFile.name}</p>}
-                    </div>
-                    <input ref={dubbingFileInputRef} type="file" accept="audio/*,video/*" className="hidden"
-                      onChange={(e) => { if (e.target.files?.[0]) setDubbingFile(e.target.files[0]); }} />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Source</Label>
-                      <Select value={dubbingSourceLang} onValueChange={setDubbingSourceLang}>
-                        <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white rounded-xl"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-[#0d0a1a] border-white/[0.1] rounded-xl">
-                          {[['en','English'],['es','Spanish'],['fr','French'],['de','German'],['it','Italian'],['pt','Portuguese'],['ja','Japanese'],['ko','Korean'],['zh','Chinese'],['hi','Hindi'],['ar','Arabic'],['ru','Russian'],['pl','Polish'],['tr','Turkish']].map(([v,l]) => (
-                            <SelectItem key={v} value={v} className="text-white hover:bg-white/[0.05]">{l}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="text-white/50 text-xs font-mono tracking-widest uppercase mb-2 block">Target</Label>
-                      <Select value={dubbingTargetLang} onValueChange={setDubbingTargetLang}>
-                        <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white rounded-xl"><SelectValue /></SelectTrigger>
-                        <SelectContent className="bg-[#0d0a1a] border-white/[0.1] rounded-xl">
-                          {[['en','English'],['es','Spanish'],['fr','French'],['de','German'],['it','Italian'],['pt','Portuguese'],['ja','Japanese'],['ko','Korean'],['zh','Chinese'],['hi','Hindi'],['ar','Arabic'],['ru','Russian'],['pl','Polish'],['tr','Turkish'],['nl','Dutch'],['sv','Swedish']].map(([v,l]) => (
-                            <SelectItem key={v} value={v} className="text-white hover:bg-white/[0.05]">{l}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <Button onClick={dubAudio} disabled={isDubbing || !dubbingFile}
-                    className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold rounded-xl hover:scale-[1.02] hover:shadow-xl hover:shadow-rose-500/20 transition-all"
-                  >
-                    {isDubbing ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />Starting...</>) : (<><Globe className="w-4 h-4 mr-2" />Start Dubbing</>)}
-                  </Button>
-
-                  {dubbingResult && (
-                    <div className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                      <p className="text-white/75 text-sm leading-relaxed whitespace-pre-wrap">{dubbingResult}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-
-          {/* Generated Audio History */}
-          {generatedAudios.length > 0 && (
-            <div className="mt-12 animate-slide-up">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center">
-                  <AudioLines className="w-4 h-4 text-cyan-400" />
-                </div>
-                <h3 className="text-lg font-bold" style={{ fontFamily: 'Fredoka' }}>
-                  <span className="text-white/70">Generated Audio</span>
-                  <span className="text-white/20 text-sm font-normal ml-2">({generatedAudios.length})</span>
-                </h3>
-              </div>
-              <div className="space-y-3">
-                {generatedAudios.map((audio) => (
-                  <div key={audio.timestamp}
-                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 group">
-                    <Button variant="ghost" size="icon" onClick={() => playAudio(audio.url)}
-                      className="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500/15 to-purple-500/15 hover:from-cyan-500/25 hover:to-purple-500/25 text-cyan-400 shrink-0 group-hover:scale-105 transition-transform">
-                      {playingUrl === audio.url ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
-                    </Button>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white/70 font-medium truncate">{audio.filename}</p>
-                      <p className="text-[11px] text-white/25">
-                        <span className="text-cyan-400/60 font-medium">{audio.type}</span>
-                        <span className="mx-1.5">•</span>
-                        {new Date(audio.timestamp).toLocaleTimeString()}
-                      </p>
-                    </div>
-                    <Button variant="ghost" size="icon" onClick={() => downloadAudio(audio.url, audio.filename)}
-                      className="w-9 h-9 text-white/30 hover:text-white hover:bg-white/[0.05] rounded-xl shrink-0">
-                      <Download className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
+          {!sidebarCollapsed && (
+            <div className="overflow-hidden">
+              <p className="text-sm font-semibold text-white/90 truncate">ElevenLabs</p>
+              <p className="text-[10px] text-white/25 truncate">AI Audio Studio</p>
             </div>
           )}
         </div>
-      </section>
 
-      {/* Features Overview - matching landing page card style */}
-      <section className="relative z-10 py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="text-cyan-400/70 text-xs font-mono tracking-widest uppercase">All Features</span>
-            <h2 className="text-3xl md:text-4xl font-bold mt-3" style={{ fontFamily: 'Fredoka' }}>
-              Everything <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">ElevenLabs</span> offers.
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { icon: Volume2, title: 'Text to Speech', desc: '29+ languages, 5 models', color: 'text-cyan-400', gradient: 'from-cyan-500/10 to-blue-500/5', border: 'hover:border-cyan-500/20' },
-              { icon: Music, title: 'Music Generation', desc: 'Lyrics, genres, moods', color: 'text-pink-400', gradient: 'from-pink-500/10 to-purple-500/5', border: 'hover:border-pink-500/20' },
-              { icon: Radio, title: 'Sound Effects', desc: 'Any sound from text', color: 'text-purple-400', gradient: 'from-purple-500/10 to-indigo-500/5', border: 'hover:border-purple-500/20' },
-              { icon: Users, title: 'Voice Cloning', desc: 'Clone any voice instantly', color: 'text-emerald-400', gradient: 'from-emerald-500/10 to-teal-500/5', border: 'hover:border-emerald-500/20' },
-              { icon: Wand2, title: 'Voice Design', desc: 'Create voices from scratch', color: 'text-amber-400', gradient: 'from-amber-500/10 to-orange-500/5', border: 'hover:border-amber-500/20' },
-              { icon: Mic, title: 'Speech to Text', desc: 'Transcribe 90+ languages', color: 'text-orange-400', gradient: 'from-orange-500/10 to-red-500/5', border: 'hover:border-orange-500/20' },
-              { icon: Headphones, title: 'Audio Isolation', desc: 'Remove background noise', color: 'text-sky-400', gradient: 'from-sky-500/10 to-blue-500/5', border: 'hover:border-sky-500/20' },
-              { icon: Globe, title: 'AI Dubbing', desc: 'Dub to any language', color: 'text-rose-400', gradient: 'from-rose-500/10 to-pink-500/5', border: 'hover:border-rose-500/20' },
-            ].map((feature, i) => (
-              <div key={i} className={`group p-5 rounded-2xl bg-gradient-to-br ${feature.gradient} border border-white/[0.04] ${feature.border} transition-all duration-500 hover:translate-y-[-2px]`}>
-                <div className="w-11 h-11 rounded-xl bg-white/[0.05] flex items-center justify-center mb-3 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                  <feature.icon className={`w-5 h-5 ${feature.color}`} />
+        {/* Tool Navigation */}
+        <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
+          {tools.map((tool) => {
+            const isActive = activeTool === tool.id;
+            return (
+              <button
+                key={tool.id}
+                onClick={() => handleToolChange(tool.id)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
+                  ${isActive
+                    ? 'bg-white/[0.06] shadow-sm'
+                    : 'hover:bg-white/[0.03]'
+                  }`}
+                title={sidebarCollapsed ? tool.label : undefined}
+              >
+                {/* Active indicator */}
+                {isActive && (
+                  <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full ${tool.color.replace('text-', 'bg-')}`} />
+                )}
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200
+                  ${isActive ? `${tool.bgColor} ${tool.color}` : 'text-white/30 group-hover:text-white/50'}`}>
+                  <tool.icon />
                 </div>
-                <h4 className="text-sm font-bold text-white/80 mb-1" style={{ fontFamily: 'Fredoka' }}>{feature.title}</h4>
-                <p className="text-[11px] text-white/30 leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+                {!sidebarCollapsed && (
+                  <span className={`text-[13px] font-medium truncate transition-colors ${isActive ? 'text-white/90' : 'text-white/40 group-hover:text-white/60'}`}>
+                    {tool.label}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
 
-      {/* Footer - matching app style */}
-      <footer className="border-t border-white/[0.04] py-10 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <img src={IMAGES.mascot} alt="Foxy" className="w-7 h-7 object-contain" />
-            <span className="text-sm font-bold" style={{ fontFamily: 'Fredoka' }}>
-              <span className="text-orange-400">Foxy</span>{' '}
-              <span className="text-white/60">Code</span>
-            </span>
-            <span className="text-white/20 mx-2">×</span>
-            <ElevenLabsLogo className="w-4 h-4 text-white/50" />
-            <span className="text-sm text-white/50 font-medium">ElevenLabs</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link to="/" className="text-xs text-white/25 hover:text-orange-400 transition-colors font-medium">Home</Link>
-            <Link to="/ai" className="text-xs text-white/25 hover:text-purple-400 transition-colors font-medium">AI Tools</Link>
-            <Link to="/ai/chat" className="text-xs text-white/25 hover:text-cyan-400 transition-colors font-medium">AI Chat</Link>
-          </div>
-          <p className="text-[11px] text-white/15">© 2026 Foxy Code Animation Studio</p>
+        {/* Sidebar Footer */}
+        <div className="p-3 border-t border-white/[0.04]">
+          <button
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-white/20 hover:text-white/40 hover:bg-white/[0.02] transition-all text-xs"
+          >
+            {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <><ChevronLeft className="w-4 h-4" /><span>Collapse</span></>}
+          </button>
         </div>
-      </footer>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col overflow-hidden">
+        {/* Top Bar */}
+        <header className="h-14 border-b border-white/[0.04] flex items-center justify-between px-6 shrink-0 bg-[#060411]/80 backdrop-blur-sm">
+          <div className="flex items-center gap-4">
+            <Link to="/ai" className="flex items-center gap-1.5 text-white/25 hover:text-white/50 transition-colors">
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span className="text-[11px] font-medium tracking-wide">Back</span>
+            </Link>
+            <div className="w-px h-4 bg-white/[0.06]" />
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${currentTool.color.replace('text-', 'bg-')}`} />
+              <h1 className="text-sm font-semibold text-white/80">{currentTool.label}</h1>
+            </div>
+          </div>
+          <p className="text-[11px] text-white/20 hidden md:block">{currentTool.description}</p>
+        </header>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-8">
+            {renderContent()}
+
+            {/* Generated Audio List */}
+            {generatedAudios.length > 0 && (
+              <div className="mt-10 pt-8 border-t border-white/[0.04]">
+                <div className="flex items-center gap-2 mb-4">
+                  <AudioLines className="w-4 h-4 text-white/20" />
+                  <h3 className="text-xs font-medium text-white/30 uppercase tracking-wider">Generated ({generatedAudios.length})</h3>
+                </div>
+                <div className="space-y-2">
+                  {generatedAudios.map((audio) => (
+                    <div key={audio.timestamp} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.015] border border-white/[0.04] hover:bg-white/[0.03] transition-all group">
+                      <button onClick={() => playAudio(audio.url)}
+                        className="w-9 h-9 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] flex items-center justify-center text-white/50 hover:text-white transition-all shrink-0">
+                        {playingUrl === audio.url ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
+                      </button>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-white/60 font-medium truncate">{audio.filename}</p>
+                        <p className="text-[10px] text-white/20">{audio.type} • {new Date(audio.timestamp).toLocaleTimeString()}</p>
+                      </div>
+                      <button onClick={() => downloadAudio(audio.url, audio.filename)}
+                        className="w-8 h-8 rounded-lg text-white/15 hover:text-white/50 hover:bg-white/[0.04] flex items-center justify-center transition-all opacity-0 group-hover:opacity-100">
+                        <Download className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
