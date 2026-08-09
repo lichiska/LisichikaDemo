@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MessageSquare, Scissors, Image, Sparkles, ArrowLeft, Zap, Bot, Wand2, Film, Music, FileText, Globe } from 'lucide-react';
+import { MessageSquare, Scissors, Image, Sparkles, ArrowLeft, Zap, Bot, Wand2, Film, Music, FileText, Globe, AudioLines } from 'lucide-react';
 
 const IMAGES = {
   mascot: 'https://mgx-backend-cdn.metadl.com/generate/images/1498224/2026-08-01/ttjdxryaajqq/mascot-foxy-artist-2026.png',
@@ -76,6 +76,20 @@ const tools = [
     link: '/ai/chat',
     badge: 'Via AI Chat',
     badgeColor: 'bg-emerald-500/20 text-emerald-300',
+  },
+  {
+    id: 'elevenlabs',
+    title: 'ElevenLabs AI Audio',
+    description: 'Generate lifelike speech in 29+ languages, clone voices, create sound effects, and transcribe audio with ElevenLabs.',
+    icon: AudioLines,
+    color: 'from-blue-500 to-cyan-600',
+    borderColor: 'hover:border-blue-500/40',
+    bgGlow: 'group-hover:shadow-blue-500/10',
+    iconBg: 'bg-blue-500/15',
+    iconColor: 'text-blue-400',
+    link: '/ai/elevenlabs',
+    badge: 'New',
+    badgeColor: 'bg-blue-500/20 text-blue-300',
   },
   {
     id: 'music',
