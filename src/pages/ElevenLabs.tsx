@@ -312,15 +312,17 @@ const ElevenLabs = () => {
       if (musicGenre !== 'any') prompt += ` Genre: ${musicGenre}.`;
       if (musicMood !== 'any') prompt += ` Mood: ${musicMood}.`;
       if (musicTempo !== 'any') prompt += ` Tempo: ${musicTempo}.`;
-      if (musicInstrumental) prompt += ' Instrumental only.';
       if (musicLyrics.trim() && !musicInstrumental) prompt += ` Lyrics: ${musicLyrics}`;
-      const body: Record<string, unknown> = { text: prompt.trim() };
-      // Only add duration if user specified one - NO LIMIT ENFORCED
+      const body: Record<string, unknown> = { prompt: prompt.trim(), force_instrumental: musicInstrumental };
+      // Only add duration if user specified one - uses music_length_ms (milliseconds)
       if (musicDuration && parseFloat(musicDuration) > 0) {
-        body.duration_seconds = parseFloat(musicDuration);
+        body.music_length_ms = Math.round(parseFloat(musicDuration) * 1000);
       }
-      const res = await fetch(`${API_BASE}/sound-generation`, { method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-      if (!res.ok) throw new Error('Music generation failed');
+      const res = await fetch(`${API_BASE}/music/stream`, { method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '');
+        throw new Error(errText || 'Music generation failed');
+      }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       setGeneratedAudios(prev => [{ url, filename: `music_${Date.now()}.mp3`, timestamp: Date.now(), type: 'Music' }, ...prev]);
