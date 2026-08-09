@@ -183,7 +183,7 @@ const GeminiAI = () => {
       }
 
       // Direct Gemini API call only
-      const url = `${GEMINI_API_BASE}/models/${selectedModel}:generateContent?key=${GEMINI_API_KEY}`;
+      const url = `${GEMINI_API_BASE}/models/${selectedModel}:generateContent`;
       const parts: Array<{ text: string } | { inline_data: { mime_type: string; data: string } }> = [];
 
       if (systemPrompt) parts.push({ text: systemPrompt });
@@ -215,7 +215,7 @@ const GeminiAI = () => {
 
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'X-goog-api-key': GEMINI_API_KEY },
         body: JSON.stringify({ contents: [{ parts }] }),
       });
 
