@@ -126,23 +126,23 @@ const tools = [
 
 const AIHub = () => {
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+    <div className="min-h-screen bg-white text-black overflow-x-hidden">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/[0.06]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-black/[0.06]">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link
               to="/"
-              className="flex items-center gap-2 text-white/40 hover:text-white transition-colors group"
+              className="flex items-center gap-2 text-black/40 hover:text-black transition-colors group"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
               <span className="text-sm font-medium">Home</span>
             </Link>
-            <div className="w-px h-5 bg-white/[0.08]" />
-            <span className="text-sm font-semibold text-white">AI Tools</span>
+            <div className="w-px h-5 bg-black/[0.08]" />
+            <span className="text-sm font-semibold text-black">AI Tools</span>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08]">
-            <span className="text-[11px] font-medium text-white/50">350+ Models • Free</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/[0.04] border border-black/[0.08]">
+            <span className="text-[11px] font-medium text-black/50">350+ Models • Free</span>
           </div>
         </div>
       </nav>
@@ -150,10 +150,10 @@ const AIHub = () => {
       {/* Hero */}
       <section className="relative z-10 pt-20 pb-12 px-6">
         <div className="max-w-5xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-4 tracking-tight">
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-4 tracking-tight text-black">
             AI Tools
           </h1>
-          <p className="text-white/30 text-lg max-w-xl mx-auto leading-relaxed">
+          <p className="text-black/40 text-lg max-w-xl mx-auto leading-relaxed">
             Everything you need to create. All free, all powered by cutting-edge AI.
           </p>
         </div>
@@ -167,26 +167,26 @@ const AIHub = () => {
               <Link
                 key={tool.id}
                 to={tool.link}
-                className="group relative p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.15] transition-all duration-300 hover:bg-white/[0.04] hover:-translate-y-0.5"
+                className="group relative p-6 rounded-2xl bg-black/[0.02] border border-black/[0.06] hover:border-black/[0.15] transition-all duration-300 hover:bg-black/[0.04] hover:-translate-y-0.5"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-white/60 group-hover:text-white group-hover:bg-white/[0.08] transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-black/[0.04] border border-black/[0.06] flex items-center justify-center text-black/60 group-hover:text-black group-hover:bg-black/[0.08] transition-all">
                     <tool.icon />
                   </div>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.04] border border-white/[0.06] text-white/40">
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-medium bg-black/[0.04] border border-black/[0.06] text-black/40">
                     {tool.badge}
                   </span>
                 </div>
 
-                <h3 className="text-base font-semibold mb-1.5 text-white/90">
+                <h3 className="text-base font-semibold mb-1.5 text-black/90">
                   {tool.title}
                 </h3>
-                <p className="text-white/30 text-sm leading-relaxed">
+                <p className="text-black/40 text-sm leading-relaxed">
                   {tool.description}
                 </p>
 
                 {/* Arrow hint */}
-                <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity text-white/30">
+                <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity text-black/30">
                   <Sparkles className="w-4 h-4" />
                 </div>
               </Link>
@@ -196,12 +196,12 @@ const AIHub = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/[0.04] py-6 px-6 relative z-10">
+      <footer className="border-t border-black/[0.04] py-6 px-6 relative z-10">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link to="/" className="text-xs text-white/20 hover:text-white/60 transition-colors">
+          <Link to="/" className="text-xs text-black/20 hover:text-black/60 transition-colors">
             ← Home
           </Link>
-          <p className="text-[11px] text-white/15">© 2026 Foxy Code</p>
+          <p className="text-[11px] text-black/20">© 2026 Foxy Code</p>
         </div>
       </footer>
     </div>
