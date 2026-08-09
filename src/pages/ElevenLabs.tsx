@@ -95,20 +95,18 @@ interface ToolItem {
   id: ToolId;
   label: string;
   icon: React.FC;
-  color: string;
-  bgColor: string;
   description: string;
 }
 
 const tools: ToolItem[] = [
-  { id: 'tts', label: 'Text to Speech', icon: TTSIcon, color: 'text-cyan-400', bgColor: 'bg-cyan-500/10', description: 'Convert text into lifelike speech' },
-  { id: 'music', label: 'Music', icon: MusicIcon, color: 'text-pink-400', bgColor: 'bg-pink-500/10', description: 'Generate original music with lyrics' },
-  { id: 'sfx', label: 'Sound Effects', icon: SFXIcon, color: 'text-violet-400', bgColor: 'bg-violet-500/10', description: 'Create any sound from a description' },
-  { id: 'clone', label: 'Voice Clone', icon: CloneIcon, color: 'text-emerald-400', bgColor: 'bg-emerald-500/10', description: 'Clone a voice from audio samples' },
-  { id: 'design', label: 'Voice Design', icon: DesignIcon, color: 'text-amber-400', bgColor: 'bg-amber-500/10', description: 'Design new voices from scratch' },
-  { id: 'stt', label: 'Speech to Text', icon: STTIcon, color: 'text-orange-400', bgColor: 'bg-orange-500/10', description: 'Transcribe audio in 90+ languages' },
-  { id: 'isolation', label: 'Isolation', icon: IsolationIcon, color: 'text-sky-400', bgColor: 'bg-sky-500/10', description: 'Remove background noise' },
-  { id: 'dubbing', label: 'Dubbing', icon: DubbingIcon, color: 'text-rose-400', bgColor: 'bg-rose-500/10', description: 'Dub content into other languages' },
+  { id: 'tts', label: 'Text to Speech', icon: TTSIcon, description: 'Convert text into lifelike speech' },
+  { id: 'music', label: 'Music', icon: MusicIcon, description: 'Generate original music with lyrics' },
+  { id: 'sfx', label: 'Sound Effects', icon: SFXIcon, description: 'Create any sound from a description' },
+  { id: 'clone', label: 'Voice Clone', icon: CloneIcon, description: 'Clone a voice from audio samples' },
+  { id: 'design', label: 'Voice Design', icon: DesignIcon, description: 'Design new voices from scratch' },
+  { id: 'stt', label: 'Speech to Text', icon: STTIcon, description: 'Transcribe audio in 90+ languages' },
+  { id: 'isolation', label: 'Isolation', icon: IsolationIcon, description: 'Remove background noise' },
+  { id: 'dubbing', label: 'Dubbing', icon: DubbingIcon, description: 'Dub content into other languages' },
 ];
 
 const ElevenLabs = () => {
@@ -360,13 +358,13 @@ const ElevenLabs = () => {
                 <div>
                   <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Text</Label>
                   <Textarea value={ttsText} onChange={(e) => setTtsText(e.target.value)} placeholder="Type or paste text to convert to speech..."
-                    className="min-h-[200px] bg-white/[0.02] border-white/[0.06] text-white/90 placeholder:text-white/15 resize-none focus:border-cyan-500/30 rounded-xl text-[14px] leading-relaxed" />
+                    className="min-h-[200px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/30 rounded-xl text-[14px] leading-relaxed" />
                   <div className="flex justify-between items-center mt-2">
-                    <span className="text-[10px] text-white/15 font-mono">{ttsText.length} characters</span>
+                    <span className="text-[10px] text-white/20 font-mono">{ttsText.length} characters</span>
                   </div>
                 </div>
                 <Button onClick={generateSpeech} disabled={isGenerating || !ttsText.trim() || !selectedVoice}
-                  className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-cyan-500/20">
+                  className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
                   {isGenerating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><AudioLines className="w-4 h-4 mr-2" />Generate Speech</>}
                 </Button>
               </div>
@@ -375,8 +373,8 @@ const ElevenLabs = () => {
                   <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Voice</Label>
                   {loadingVoices ? <div className="flex items-center gap-2 text-white/30 text-xs"><Loader2 className="w-3 h-3 animate-spin" />Loading...</div> : (
                     <Select value={selectedVoice} onValueChange={setSelectedVoice}>
-                      <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue placeholder="Select voice" /></SelectTrigger>
-                      <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl max-h-[250px]">
+                      <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue placeholder="Select voice" /></SelectTrigger>
+                      <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl max-h-[250px]">
                         {voices.map(v => <SelectItem key={v.voice_id} value={v.voice_id} className="text-white/80 text-sm">{v.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
@@ -385,8 +383,8 @@ const ElevenLabs = () => {
                 <div>
                   <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Model</Label>
                   <Select value={selectedModel} onValueChange={setSelectedModel}>
-                    <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                    <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
                       <SelectItem value="eleven_multilingual_v2" className="text-white/80 text-sm">Multilingual v2</SelectItem>
                       <SelectItem value="eleven_turbo_v2_5" className="text-white/80 text-sm">Turbo v2.5</SelectItem>
                       <SelectItem value="eleven_turbo_v2" className="text-white/80 text-sm">Turbo v2</SelectItem>
@@ -396,16 +394,16 @@ const ElevenLabs = () => {
                 </div>
                 <div className="space-y-3 pt-2">
                   <div>
-                    <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Stability</Label><span className="text-[10px] text-cyan-400/70 font-mono">{stability[0].toFixed(2)}</span></div>
-                    <Slider value={stability} onValueChange={setStability} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-cyan-400 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
+                    <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Stability</Label><span className="text-[10px] text-white/50 font-mono">{stability[0].toFixed(2)}</span></div>
+                    <Slider value={stability} onValueChange={setStability} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-white [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
                   </div>
                   <div>
-                    <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Similarity</Label><span className="text-[10px] text-purple-400/70 font-mono">{similarityBoost[0].toFixed(2)}</span></div>
-                    <Slider value={similarityBoost} onValueChange={setSimilarityBoost} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-purple-400 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
+                    <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Similarity</Label><span className="text-[10px] text-white/50 font-mono">{similarityBoost[0].toFixed(2)}</span></div>
+                    <Slider value={similarityBoost} onValueChange={setSimilarityBoost} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-white [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
                   </div>
                   <div>
-                    <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Style</Label><span className="text-[10px] text-pink-400/70 font-mono">{style[0].toFixed(2)}</span></div>
-                    <Slider value={style} onValueChange={setStyle} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-pink-400 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
+                    <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Style</Label><span className="text-[10px] text-white/50 font-mono">{style[0].toFixed(2)}</span></div>
+                    <Slider value={style} onValueChange={setStyle} min={0} max={1} step={0.01} className="[&_[role=slider]]:bg-white [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
                   </div>
                 </div>
               </div>
@@ -419,14 +417,14 @@ const ElevenLabs = () => {
             <div>
               <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Prompt</Label>
               <Textarea value={musicPrompt} onChange={(e) => setMusicPrompt(e.target.value)} placeholder="Describe the music you want to create..."
-                className="min-h-[100px] bg-white/[0.02] border-white/[0.06] text-white/90 placeholder:text-white/15 resize-none focus:border-pink-500/30 rounded-xl text-sm" />
+                className="min-h-[100px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/30 rounded-xl text-sm" />
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Genre</Label>
                 <Select value={musicGenre} onValueChange={setMusicGenre}>
-                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                  <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
                     {['any','pop','rock','electronic','hip-hop','jazz','classical','ambient','lo-fi','cinematic'].map(g => <SelectItem key={g} value={g} className="text-white/80 text-sm capitalize">{g === 'any' ? 'Any' : g}</SelectItem>)}
                   </SelectContent>
                 </Select>
@@ -434,8 +432,8 @@ const ElevenLabs = () => {
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Mood</Label>
                 <Select value={musicMood} onValueChange={setMusicMood}>
-                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                  <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
                     {['any','upbeat','sad','energetic','calm','dark','romantic','epic','dreamy'].map(m => <SelectItem key={m} value={m} className="text-white/80 text-sm capitalize">{m === 'any' ? 'Any' : m}</SelectItem>)}
                   </SelectContent>
                 </Select>
@@ -443,8 +441,8 @@ const ElevenLabs = () => {
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Tempo</Label>
                 <Select value={musicTempo} onValueChange={setMusicTempo}>
-                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                  <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
                     {['any','slow','medium','fast','very fast'].map(t => <SelectItem key={t} value={t} className="text-white/80 text-sm capitalize">{t === 'any' ? 'Any' : t}</SelectItem>)}
                   </SelectContent>
                 </Select>
@@ -453,7 +451,7 @@ const ElevenLabs = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Label className="text-[11px] text-white/40">Duration (sec)</Label>
-                <Input type="number" value={musicDuration} onChange={(e) => setMusicDuration(e.target.value)} className="w-20 h-8 bg-white/[0.02] border-white/[0.06] text-white/80 rounded-lg text-sm" min="5" max="60" />
+                <Input type="number" value={musicDuration} onChange={(e) => setMusicDuration(e.target.value)} className="w-20 h-8 bg-white/[0.03] border-white/[0.08] text-white/80 rounded-lg text-sm" min="5" max="60" />
               </div>
               <div className="flex items-center gap-2">
                 <Label className="text-[11px] text-white/40">Instrumental</Label>
@@ -463,12 +461,12 @@ const ElevenLabs = () => {
             {!musicInstrumental && (
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Lyrics</Label>
-                <Textarea value={musicLyrics} onChange={(e) => setMusicLyrics(e.target.value)} placeholder="[Verse 1]\nYour lyrics here..."
-                  className="min-h-[120px] bg-white/[0.02] border-white/[0.06] text-white/90 placeholder:text-white/15 resize-none focus:border-pink-500/30 rounded-xl font-mono text-sm" />
+                <Textarea value={musicLyrics} onChange={(e) => setMusicLyrics(e.target.value)} placeholder={"[Verse 1]\nYour lyrics here..."}
+                  className="min-h-[120px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/30 rounded-xl font-mono text-sm" />
               </div>
             )}
             <Button onClick={generateMusic} disabled={isGeneratingMusic || (!musicPrompt.trim() && !musicLyrics.trim())}
-              className="w-full bg-pink-500 hover:bg-pink-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-pink-500/20">
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
               {isGeneratingMusic ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><Music className="w-4 h-4 mr-2" />Generate Music</>}
             </Button>
           </div>
@@ -480,21 +478,21 @@ const ElevenLabs = () => {
             <div>
               <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Describe the Sound</Label>
               <Textarea value={sfxText} onChange={(e) => setSfxText(e.target.value)} placeholder="e.g., Thunder with heavy rain, footsteps on gravel, sci-fi laser..."
-                className="min-h-[140px] bg-white/[0.02] border-white/[0.06] text-white/90 placeholder:text-white/15 resize-none focus:border-violet-500/30 rounded-xl text-sm" />
+                className="min-h-[140px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/30 rounded-xl text-sm" />
             </div>
             <div>
               <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Duration</Label>
               <div className="flex gap-2">
                 {['', '2', '5', '10', '15', '22'].map(d => (
                   <Button key={d} variant="outline" size="sm" onClick={() => setSfxDuration(d)}
-                    className={`rounded-lg text-xs border transition-all ${sfxDuration === d ? 'bg-violet-500/15 text-violet-300 border-violet-500/30' : 'bg-transparent border-white/[0.06] text-white/40 hover:text-white/70 hover:bg-white/[0.03]'}`}>
+                    className={`rounded-lg text-xs border transition-all ${sfxDuration === d ? 'bg-white/[0.1] text-white border-white/30' : '!bg-transparent border-white/[0.08] text-white/40 hover:text-white/70 hover:!bg-white/[0.04]'}`}>
                     {d === '' ? 'Auto' : `${d}s`}
                   </Button>
                 ))}
               </div>
             </div>
             <Button onClick={generateSoundEffect} disabled={isGeneratingSfx || !sfxText.trim()}
-              className="w-full bg-violet-500 hover:bg-violet-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-violet-500/20">
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
               {isGeneratingSfx ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><Sparkles className="w-4 h-4 mr-2" />Generate Sound</>}
             </Button>
           </div>
@@ -507,27 +505,27 @@ const ElevenLabs = () => {
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Voice Name</Label>
                 <Input value={cloneName} onChange={(e) => setCloneName(e.target.value)} placeholder="My Custom Voice"
-                  className="bg-white/[0.02] border-white/[0.06] text-white/80 placeholder:text-white/15 rounded-xl h-9" />
+                  className="bg-white/[0.03] border-white/[0.08] text-white/80 placeholder:text-white/20 rounded-xl h-9" />
               </div>
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Description</Label>
                 <Input value={cloneDescription} onChange={(e) => setCloneDescription(e.target.value)} placeholder="Optional description"
-                  className="bg-white/[0.02] border-white/[0.06] text-white/80 placeholder:text-white/15 rounded-xl h-9" />
+                  className="bg-white/[0.03] border-white/[0.08] text-white/80 placeholder:text-white/20 rounded-xl h-9" />
               </div>
             </div>
             <div>
               <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Audio Samples</Label>
               <div onClick={() => fileInputRef.current?.click()}
-                className="border border-dashed border-white/[0.08] rounded-xl p-8 text-center cursor-pointer hover:border-emerald-500/30 hover:bg-emerald-500/[0.01] transition-all">
-                <Upload className="w-6 h-6 text-white/15 mx-auto mb-2" />
-                <p className="text-white/30 text-sm">Click to upload audio samples</p>
-                <p className="text-white/10 text-xs mt-1">MP3, WAV, M4A • 3+ samples recommended</p>
-                {cloneFiles.length > 0 && <div className="mt-3 space-y-0.5">{cloneFiles.map((f, i) => <p key={i} className="text-emerald-400/70 text-xs">{f.name}</p>)}</div>}
+                className="border border-dashed border-white/[0.12] rounded-xl p-8 text-center cursor-pointer hover:border-white/30 hover:bg-white/[0.02] transition-all">
+                <Upload className="w-6 h-6 text-white/20 mx-auto mb-2" />
+                <p className="text-white/40 text-sm">Click to upload audio samples</p>
+                <p className="text-white/15 text-xs mt-1">MP3, WAV, M4A • 3+ samples recommended</p>
+                {cloneFiles.length > 0 && <div className="mt-3 space-y-0.5">{cloneFiles.map((f, i) => <p key={i} className="text-white/70 text-xs">{f.name}</p>)}</div>}
               </div>
               <input ref={fileInputRef} type="file" accept="audio/*" multiple className="hidden" onChange={(e) => { if (e.target.files) setCloneFiles(Array.from(e.target.files)); }} />
             </div>
             <Button onClick={cloneVoice} disabled={isCloning || !cloneName.trim() || cloneFiles.length === 0}
-              className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-emerald-500/20">
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
               {isCloning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Cloning...</> : <><Wand2 className="w-4 h-4 mr-2" />Clone Voice</>}
             </Button>
           </div>
@@ -540,8 +538,8 @@ const ElevenLabs = () => {
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Gender</Label>
                 <Select value={vdGender} onValueChange={setVdGender}>
-                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                  <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
                     <SelectItem value="female" className="text-white/80 text-sm">Female</SelectItem>
                     <SelectItem value="male" className="text-white/80 text-sm">Male</SelectItem>
                   </SelectContent>
@@ -550,8 +548,8 @@ const ElevenLabs = () => {
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Age</Label>
                 <Select value={vdAge} onValueChange={setVdAge}>
-                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                  <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
                     <SelectItem value="young" className="text-white/80 text-sm">Young</SelectItem>
                     <SelectItem value="middle_aged" className="text-white/80 text-sm">Middle Aged</SelectItem>
                     <SelectItem value="old" className="text-white/80 text-sm">Old</SelectItem>
@@ -561,24 +559,24 @@ const ElevenLabs = () => {
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Accent</Label>
                 <Select value={vdAccent} onValueChange={setVdAccent}>
-                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                  <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
                     {['american','british','australian','indian','african','irish'].map(a => <SelectItem key={a} value={a} className="text-white/80 text-sm capitalize">{a}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div>
-              <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Accent Strength</Label><span className="text-[10px] text-amber-400/70 font-mono">{vdAccentStrength[0].toFixed(1)}</span></div>
-              <Slider value={vdAccentStrength} onValueChange={setVdAccentStrength} min={0.3} max={2.0} step={0.1} className="[&_[role=slider]]:bg-amber-400 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
+              <div className="flex justify-between mb-1"><Label className="text-[10px] text-white/30">Accent Strength</Label><span className="text-[10px] text-white/50 font-mono">{vdAccentStrength[0].toFixed(1)}</span></div>
+              <Slider value={vdAccentStrength} onValueChange={setVdAccentStrength} min={0.3} max={2.0} step={0.1} className="[&_[role=slider]]:bg-white [&_[role=slider]]:w-3 [&_[role=slider]]:h-3" />
             </div>
             <div>
               <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Preview Text</Label>
               <Textarea value={vdText} onChange={(e) => setVdText(e.target.value)} placeholder="Text to preview..."
-                className="min-h-[80px] bg-white/[0.02] border-white/[0.06] text-white/90 placeholder:text-white/15 resize-none focus:border-amber-500/30 rounded-xl text-sm" />
+                className="min-h-[80px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/30 rounded-xl text-sm" />
             </div>
             <Button onClick={designVoice} disabled={isDesigning || !vdText.trim()}
-              className="w-full bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-amber-500/20">
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
               {isDesigning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Designing...</> : <><Sparkles className="w-4 h-4 mr-2" />Generate Voice</>}
             </Button>
           </div>
@@ -589,23 +587,23 @@ const ElevenLabs = () => {
           <div className="space-y-5 max-w-2xl">
             <div>
               <div onClick={() => sttFileInputRef.current?.click()}
-                className="border border-dashed border-white/[0.08] rounded-xl p-10 text-center cursor-pointer hover:border-orange-500/30 hover:bg-orange-500/[0.01] transition-all">
-                <Mic className="w-8 h-8 text-white/10 mx-auto mb-3" />
-                <p className="text-white/30 text-sm">Upload audio to transcribe</p>
-                <p className="text-white/10 text-xs mt-1">MP3, WAV, M4A, FLAC, OGG</p>
-                {sttFile && <p className="text-orange-400/70 text-xs mt-3">{sttFile.name}</p>}
+                className="border border-dashed border-white/[0.12] rounded-xl p-10 text-center cursor-pointer hover:border-white/30 hover:bg-white/[0.02] transition-all">
+                <Mic className="w-8 h-8 text-white/15 mx-auto mb-3" />
+                <p className="text-white/40 text-sm">Upload audio to transcribe</p>
+                <p className="text-white/15 text-xs mt-1">MP3, WAV, M4A, FLAC, OGG</p>
+                {sttFile && <p className="text-white/70 text-xs mt-3">{sttFile.name}</p>}
               </div>
               <input ref={sttFileInputRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setSttFile(e.target.files[0]); }} />
             </div>
             <Button onClick={transcribeAudio} disabled={isTranscribing || !sttFile}
-              className="w-full bg-orange-500 hover:bg-orange-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-orange-500/20">
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
               {isTranscribing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Transcribing...</> : <><Languages className="w-4 h-4 mr-2" />Transcribe</>}
             </Button>
             {sttResult && (
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+              <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]">
                 <p className="text-white/70 text-sm leading-relaxed whitespace-pre-wrap">{sttResult}</p>
                 <Button variant="ghost" size="sm" onClick={() => { navigator.clipboard.writeText(sttResult); toast.success('Copied!'); }}
-                  className="mt-2 text-white/25 hover:text-white text-xs">Copy</Button>
+                  className="mt-2 text-white/30 hover:text-white text-xs">Copy</Button>
               </div>
             )}
           </div>
@@ -616,16 +614,16 @@ const ElevenLabs = () => {
           <div className="space-y-5 max-w-2xl">
             <div>
               <div onClick={() => isolationFileInputRef.current?.click()}
-                className="border border-dashed border-white/[0.08] rounded-xl p-10 text-center cursor-pointer hover:border-sky-500/30 hover:bg-sky-500/[0.01] transition-all">
-                <Headphones className="w-8 h-8 text-white/10 mx-auto mb-3" />
-                <p className="text-white/30 text-sm">Upload audio with background noise</p>
-                <p className="text-white/10 text-xs mt-1">Isolates vocals from music/noise</p>
-                {isolationFile && <p className="text-sky-400/70 text-xs mt-3">{isolationFile.name}</p>}
+                className="border border-dashed border-white/[0.12] rounded-xl p-10 text-center cursor-pointer hover:border-white/30 hover:bg-white/[0.02] transition-all">
+                <Headphones className="w-8 h-8 text-white/15 mx-auto mb-3" />
+                <p className="text-white/40 text-sm">Upload audio with background noise</p>
+                <p className="text-white/15 text-xs mt-1">Isolates vocals from music/noise</p>
+                {isolationFile && <p className="text-white/70 text-xs mt-3">{isolationFile.name}</p>}
               </div>
               <input ref={isolationFileInputRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setIsolationFile(e.target.files[0]); }} />
             </div>
             <Button onClick={isolateAudio} disabled={isIsolating || !isolationFile}
-              className="w-full bg-sky-500 hover:bg-sky-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-sky-500/20">
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
               {isIsolating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Isolating...</> : <><Headphones className="w-4 h-4 mr-2" />Isolate Audio</>}
             </Button>
           </div>
@@ -636,11 +634,11 @@ const ElevenLabs = () => {
           <div className="space-y-5 max-w-2xl">
             <div>
               <div onClick={() => dubbingFileInputRef.current?.click()}
-                className="border border-dashed border-white/[0.08] rounded-xl p-10 text-center cursor-pointer hover:border-rose-500/30 hover:bg-rose-500/[0.01] transition-all">
-                <Globe className="w-8 h-8 text-white/10 mx-auto mb-3" />
-                <p className="text-white/30 text-sm">Upload audio or video to dub</p>
-                <p className="text-white/10 text-xs mt-1">MP3, WAV, MP4, MOV</p>
-                {dubbingFile && <p className="text-rose-400/70 text-xs mt-3">{dubbingFile.name}</p>}
+                className="border border-dashed border-white/[0.12] rounded-xl p-10 text-center cursor-pointer hover:border-white/30 hover:bg-white/[0.02] transition-all">
+                <Globe className="w-8 h-8 text-white/15 mx-auto mb-3" />
+                <p className="text-white/40 text-sm">Upload audio or video to dub</p>
+                <p className="text-white/15 text-xs mt-1">MP3, WAV, MP4, MOV</p>
+                {dubbingFile && <p className="text-white/70 text-xs mt-3">{dubbingFile.name}</p>}
               </div>
               <input ref={dubbingFileInputRef} type="file" accept="audio/*,video/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setDubbingFile(e.target.files[0]); }} />
             </div>
@@ -648,8 +646,8 @@ const ElevenLabs = () => {
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Source Language</Label>
                 <Select value={dubbingSourceLang} onValueChange={setDubbingSourceLang}>
-                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                  <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
                     {[['en','English'],['es','Spanish'],['fr','French'],['de','German'],['it','Italian'],['pt','Portuguese'],['ja','Japanese'],['ko','Korean'],['zh','Chinese'],['hi','Hindi'],['ar','Arabic'],['ru','Russian']].map(([v,l]) => <SelectItem key={v} value={v} className="text-white/80 text-sm">{l}</SelectItem>)}
                   </SelectContent>
                 </Select>
@@ -657,46 +655,52 @@ const ElevenLabs = () => {
               <div>
                 <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Target Language</Label>
                 <Select value={dubbingTargetLang} onValueChange={setDubbingTargetLang}>
-                  <SelectTrigger className="bg-white/[0.02] border-white/[0.06] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#0f0c1a] border-white/[0.08] rounded-xl">
+                  <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
                     {[['en','English'],['es','Spanish'],['fr','French'],['de','German'],['it','Italian'],['pt','Portuguese'],['ja','Japanese'],['ko','Korean'],['zh','Chinese'],['hi','Hindi'],['ar','Arabic'],['ru','Russian'],['nl','Dutch'],['sv','Swedish']].map(([v,l]) => <SelectItem key={v} value={v} className="text-white/80 text-sm">{l}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <Button onClick={dubAudio} disabled={isDubbing || !dubbingFile}
-              className="w-full bg-rose-500 hover:bg-rose-400 text-black font-semibold rounded-xl h-11 transition-all hover:shadow-lg hover:shadow-rose-500/20">
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
               {isDubbing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Starting...</> : <><Globe className="w-4 h-4 mr-2" />Start Dubbing</>}
             </Button>
             {dubbingResult && (
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+              <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]">
                 <p className="text-white/70 text-sm whitespace-pre-wrap">{dubbingResult}</p>
               </div>
             )}
           </div>
         );
+
+      default:
+        return null;
     }
   };
 
   return (
-    <div className="flex h-screen bg-[#060411] text-white overflow-hidden">
+    <div className="flex h-screen bg-black text-white overflow-hidden">
       {/* Dynamic Sidebar */}
-      <aside className={`${sidebarCollapsed ? 'w-[68px]' : 'w-[240px]'} h-full border-r border-white/[0.04] bg-[#080515] flex flex-col transition-all duration-300 ease-in-out shrink-0`}>
+      <aside
+        className="h-full border-r border-white/[0.06] bg-[#0a0a0a] flex flex-col shrink-0 transition-[width] duration-300 ease-in-out"
+        style={{ width: sidebarCollapsed ? '68px' : '240px' }}
+      >
         {/* Sidebar Header */}
-        <div className="p-4 border-b border-white/[0.04] flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-white/[0.05] flex items-center justify-center shrink-0">
-            <ElevenLabsLogo className="w-4 h-4 text-white/80" />
+        <div className="p-4 border-b border-white/[0.06] flex items-center gap-3 min-h-[60px]">
+          <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center shrink-0">
+            <ElevenLabsLogo className="w-4 h-4 text-white" />
           </div>
           {!sidebarCollapsed && (
-            <div className="overflow-hidden">
-              <p className="text-sm font-semibold text-white/90 truncate">ElevenLabs</p>
-              <p className="text-[10px] text-white/25 truncate">AI Audio Studio</p>
+            <div className="overflow-hidden whitespace-nowrap">
+              <p className="text-sm font-semibold text-white truncate">ElevenLabs</p>
+              <p className="text-[10px] text-white/30 truncate">AI Audio Studio</p>
             </div>
           )}
         </div>
 
         {/* Tool Navigation */}
-        <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 py-3 px-2 space-y-1 overflow-y-auto">
           {tools.map((tool) => {
             const isActive = activeTool === tool.id;
             return (
@@ -705,21 +709,20 @@ const ElevenLabs = () => {
                 onClick={() => handleToolChange(tool.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
                   ${isActive
-                    ? 'bg-white/[0.06] shadow-sm'
-                    : 'hover:bg-white/[0.03]'
+                    ? 'bg-white/[0.08]'
+                    : 'hover:bg-white/[0.04]'
                   }`}
                 title={sidebarCollapsed ? tool.label : undefined}
               >
-                {/* Active indicator */}
                 {isActive && (
-                  <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full ${tool.color.replace('text-', 'bg-')}`} />
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-white" />
                 )}
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200
-                  ${isActive ? `${tool.bgColor} ${tool.color}` : 'text-white/30 group-hover:text-white/50'}`}>
+                  ${isActive ? 'bg-white/[0.1] text-white' : 'text-white/30 group-hover:text-white/60'}`}>
                   <tool.icon />
                 </div>
                 {!sidebarCollapsed && (
-                  <span className={`text-[13px] font-medium truncate transition-colors ${isActive ? 'text-white/90' : 'text-white/40 group-hover:text-white/60'}`}>
+                  <span className={`text-[13px] font-medium truncate transition-colors ${isActive ? 'text-white' : 'text-white/40 group-hover:text-white/70'}`}>
                     {tool.label}
                   </span>
                 )}
@@ -728,33 +731,34 @@ const ElevenLabs = () => {
           })}
         </nav>
 
-        {/* Sidebar Footer */}
-        <div className="p-3 border-t border-white/[0.04]">
+        {/* Sidebar Collapse Toggle */}
+        <div className="p-3 border-t border-white/[0.06]">
           <button
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-white/20 hover:text-white/40 hover:bg-white/[0.02] transition-all text-xs"
+            type="button"
+            onClick={() => setSidebarCollapsed(prev => !prev)}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-white/30 hover:text-white hover:bg-white/[0.06] transition-all text-xs cursor-pointer select-none"
           >
-            {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <><ChevronLeft className="w-4 h-4" /><span>Collapse</span></>}
+            {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <><ChevronLeft className="w-4 h-4" /><span className="font-medium">Collapse</span></>}
           </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Top Bar */}
-        <header className="h-14 border-b border-white/[0.04] flex items-center justify-between px-6 shrink-0 bg-[#060411]/80 backdrop-blur-sm">
+        <header className="h-14 border-b border-white/[0.06] flex items-center justify-between px-6 shrink-0 bg-black/80 backdrop-blur-sm">
           <div className="flex items-center gap-4">
-            <Link to="/ai" className="flex items-center gap-1.5 text-white/25 hover:text-white/50 transition-colors">
+            <Link to="/ai" className="flex items-center gap-1.5 text-white/30 hover:text-white transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" />
               <span className="text-[11px] font-medium tracking-wide">Back</span>
             </Link>
-            <div className="w-px h-4 bg-white/[0.06]" />
+            <div className="w-px h-4 bg-white/[0.08]" />
             <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${currentTool.color.replace('text-', 'bg-')}`} />
-              <h1 className="text-sm font-semibold text-white/80">{currentTool.label}</h1>
+              <div className="w-2 h-2 rounded-full bg-white" />
+              <h1 className="text-sm font-semibold text-white">{currentTool.label}</h1>
             </div>
           </div>
-          <p className="text-[11px] text-white/20 hidden md:block">{currentTool.description}</p>
+          <p className="text-[11px] text-white/25 hidden md:block">{currentTool.description}</p>
         </header>
 
         {/* Content */}
@@ -764,24 +768,24 @@ const ElevenLabs = () => {
 
             {/* Generated Audio List */}
             {generatedAudios.length > 0 && (
-              <div className="mt-10 pt-8 border-t border-white/[0.04]">
+              <div className="mt-10 pt-8 border-t border-white/[0.06]">
                 <div className="flex items-center gap-2 mb-4">
-                  <AudioLines className="w-4 h-4 text-white/20" />
-                  <h3 className="text-xs font-medium text-white/30 uppercase tracking-wider">Generated ({generatedAudios.length})</h3>
+                  <AudioLines className="w-4 h-4 text-white/25" />
+                  <h3 className="text-xs font-medium text-white/35 uppercase tracking-wider">Generated ({generatedAudios.length})</h3>
                 </div>
                 <div className="space-y-2">
                   {generatedAudios.map((audio) => (
-                    <div key={audio.timestamp} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.015] border border-white/[0.04] hover:bg-white/[0.03] transition-all group">
+                    <div key={audio.timestamp} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] transition-all group">
                       <button onClick={() => playAudio(audio.url)}
-                        className="w-9 h-9 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] flex items-center justify-center text-white/50 hover:text-white transition-all shrink-0">
+                        className="w-9 h-9 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] flex items-center justify-center text-white/50 hover:text-white transition-all shrink-0">
                         {playingUrl === audio.url ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
                       </button>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-white/60 font-medium truncate">{audio.filename}</p>
-                        <p className="text-[10px] text-white/20">{audio.type} • {new Date(audio.timestamp).toLocaleTimeString()}</p>
+                        <p className="text-xs text-white/70 font-medium truncate">{audio.filename}</p>
+                        <p className="text-[10px] text-white/25">{audio.type} • {new Date(audio.timestamp).toLocaleTimeString()}</p>
                       </div>
                       <button onClick={() => downloadAudio(audio.url, audio.filename)}
-                        className="w-8 h-8 rounded-lg text-white/15 hover:text-white/50 hover:bg-white/[0.04] flex items-center justify-center transition-all opacity-0 group-hover:opacity-100">
+                        className="w-8 h-8 rounded-lg text-white/20 hover:text-white/60 hover:bg-white/[0.06] flex items-center justify-center transition-all opacity-0 group-hover:opacity-100">
                         <Download className="w-3.5 h-3.5" />
                       </button>
                     </div>
