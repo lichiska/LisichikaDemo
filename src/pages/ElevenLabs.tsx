@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 
-const ELEVENLABS_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY || '';
+const ELEVENLABS_API_KEY = 'sk_55a4650c959426e2d090d08b6f959bdc5afbaa9a196c7548';
 const API_BASE = 'https://api.elevenlabs.io/v1';
 
 // Minimalist tool icons
