@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Mic, Volume2, Wand2, Upload, Play, Pause, Download, Loader2, Music, AudioLines, Languages, Sparkles, Users, Radio, Headphones, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Loader2, Play, Pause, Download, Upload, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,23 +10,14 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 
-const ELEVENLABS_API_KEY = 'sk_55a4650c959426e2d090d08b6f959bdc5afbaa9a196c7548';
+const ELEVENLABS_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY || '';
 const API_BASE = 'https://api.elevenlabs.io/v1';
 
-// ElevenLabs Logo SVG
-const ElevenLabsLogo = ({ className = '' }: { className?: string }) => (
-  <svg viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path d="M31.5 0H38.5V65H31.5V0Z" fill="currentColor"/>
-    <path d="M44.5 0H51.5V65H44.5V0Z" fill="currentColor"/>
-  </svg>
-);
-
-// Mini icon components for each tool
+// Minimalist tool icons
 const TTSIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.5">
     <path d="M12 18.5a6.5 6.5 0 006.5-6.5V6.5a6.5 6.5 0 00-13 0V12a6.5 6.5 0 006.5 6.5z" strokeLinecap="round"/>
     <path d="M19 10v2a7 7 0 01-14 0v-2M12 18.5V22M8 22h8" strokeLinecap="round"/>
-    <path d="M3 7h2M3 12h2M19 7h2M19 12h2" strokeLinecap="round" opacity="0.5"/>
   </svg>
 );
 
@@ -76,6 +67,14 @@ const DubbingIcon = () => (
   </svg>
 );
 
+// ElevenLabs Logo
+const ElevenLabsLogo = () => (
+  <svg viewBox="0 0 76 65" fill="none" className="w-4 h-4">
+    <path d="M31.5 0H38.5V65H31.5V0Z" fill="currentColor"/>
+    <path d="M44.5 0H51.5V65H44.5V0Z" fill="currentColor"/>
+  </svg>
+);
+
 interface Voice {
   voice_id: string;
   name: string;
@@ -100,13 +99,13 @@ interface ToolItem {
 
 const tools: ToolItem[] = [
   { id: 'tts', label: 'Text to Speech', icon: TTSIcon, description: 'Convert text into lifelike speech' },
-  { id: 'music', label: 'Music', icon: MusicIcon, description: 'Generate original music with lyrics' },
-  { id: 'sfx', label: 'Sound Effects', icon: SFXIcon, description: 'Create any sound from a description' },
-  { id: 'clone', label: 'Voice Clone', icon: CloneIcon, description: 'Clone a voice from audio samples' },
-  { id: 'design', label: 'Voice Design', icon: DesignIcon, description: 'Design new voices from scratch' },
-  { id: 'stt', label: 'Speech to Text', icon: STTIcon, description: 'Transcribe audio in 90+ languages' },
+  { id: 'music', label: 'Music', icon: MusicIcon, description: 'Generate original music' },
+  { id: 'sfx', label: 'Sound Effects', icon: SFXIcon, description: 'Create any sound from text' },
+  { id: 'clone', label: 'Voice Clone', icon: CloneIcon, description: 'Clone a voice from samples' },
+  { id: 'design', label: 'Voice Design', icon: DesignIcon, description: 'Design new voices' },
+  { id: 'stt', label: 'Speech to Text', icon: STTIcon, description: 'Transcribe audio' },
   { id: 'isolation', label: 'Isolation', icon: IsolationIcon, description: 'Remove background noise' },
-  { id: 'dubbing', label: 'Dubbing', icon: DubbingIcon, description: 'Dub content into other languages' },
+  { id: 'dubbing', label: 'Dubbing', icon: DubbingIcon, description: 'Dub into other languages' },
 ];
 
 const ElevenLabs = () => {
@@ -162,14 +161,14 @@ const ElevenLabs = () => {
   const [isDubbing, setIsDubbing] = useState(false);
   const [dubbingResult, setDubbingResult] = useState('');
 
-  // Music state
+  // Music state - NO LIMITS
   const [musicPrompt, setMusicPrompt] = useState('');
   const [musicLyrics, setMusicLyrics] = useState('');
-  const [musicDuration, setMusicDuration] = useState('30');
+  const [musicDuration, setMusicDuration] = useState('');
   const [musicInstrumental, setMusicInstrumental] = useState(false);
-  const [musicGenre, setMusicGenre] = useState('pop');
-  const [musicMood, setMusicMood] = useState('upbeat');
-  const [musicTempo, setMusicTempo] = useState('medium');
+  const [musicGenre, setMusicGenre] = useState('any');
+  const [musicMood, setMusicMood] = useState('any');
+  const [musicTempo, setMusicTempo] = useState('any');
   const [isGeneratingMusic, setIsGeneratingMusic] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -304,6 +303,7 @@ const ElevenLabs = () => {
     finally { setIsDubbing(false); }
   };
 
+  // Music generation - NO LENGTH OR WORD LIMITS
   const generateMusic = async () => {
     if (!musicPrompt.trim() && !musicLyrics.trim()) { toast.error('Enter a prompt or lyrics.'); return; }
     setIsGeneratingMusic(true);
@@ -315,7 +315,10 @@ const ElevenLabs = () => {
       if (musicInstrumental) prompt += ' Instrumental only.';
       if (musicLyrics.trim() && !musicInstrumental) prompt += ` Lyrics: ${musicLyrics}`;
       const body: Record<string, unknown> = { text: prompt.trim() };
-      if (musicDuration) body.duration_seconds = parseFloat(musicDuration);
+      // Only add duration if user specified one - NO LIMIT ENFORCED
+      if (musicDuration && parseFloat(musicDuration) > 0) {
+        body.duration_seconds = parseFloat(musicDuration);
+      }
       const res = await fetch(`${API_BASE}/sound-generation`, { method: 'POST', headers: { 'xi-api-key': ELEVENLABS_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       if (!res.ok) throw new Error('Music generation failed');
       const blob = await res.blob();
@@ -347,7 +350,6 @@ const ElevenLabs = () => {
 
   const currentTool = tools.find(t => t.id === activeTool)!;
 
-  // Render content for each tool
   const renderContent = () => {
     switch (activeTool) {
       case 'tts':
@@ -358,14 +360,12 @@ const ElevenLabs = () => {
                 <div>
                   <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Text</Label>
                   <Textarea value={ttsText} onChange={(e) => setTtsText(e.target.value)} placeholder="Type or paste text to convert to speech..."
-                    className="min-h-[200px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/30 rounded-xl text-[14px] leading-relaxed" />
-                  <div className="flex justify-between items-center mt-2">
-                    <span className="text-[10px] text-white/20 font-mono">{ttsText.length} characters</span>
-                  </div>
+                    className="min-h-[200px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/20 rounded-xl text-[14px] leading-relaxed" />
+                  <span className="text-[10px] text-white/20 font-mono mt-1 block">{ttsText.length} characters</span>
                 </div>
                 <Button onClick={generateSpeech} disabled={isGenerating || !ttsText.trim() || !selectedVoice}
-                  className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
-                  {isGenerating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><AudioLines className="w-4 h-4 mr-2" />Generate Speech</>}
+                  className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11">
+                  {isGenerating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : 'Generate Speech'}
                 </Button>
               </div>
               <div className="lg:col-span-2 space-y-4">
@@ -416,8 +416,8 @@ const ElevenLabs = () => {
           <div className="space-y-5 max-w-3xl">
             <div>
               <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Prompt</Label>
-              <Textarea value={musicPrompt} onChange={(e) => setMusicPrompt(e.target.value)} placeholder="Describe the music you want to create..."
-                className="min-h-[100px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/30 rounded-xl text-sm" />
+              <Textarea value={musicPrompt} onChange={(e) => setMusicPrompt(e.target.value)} placeholder="Describe the music you want to create — no limits..."
+                className="min-h-[100px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/20 rounded-xl text-sm" />
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div>
@@ -425,7 +425,7 @@ const ElevenLabs = () => {
                 <Select value={musicGenre} onValueChange={setMusicGenre}>
                   <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
-                    {['any','pop','rock','electronic','hip-hop','jazz','classical','ambient','lo-fi','cinematic'].map(g => <SelectItem key={g} value={g} className="text-white/80 text-sm capitalize">{g === 'any' ? 'Any' : g}</SelectItem>)}
+                    {['any','pop','rock','electronic','hip-hop','jazz','classical','ambient','lo-fi','cinematic','metal','r&b','country','reggae','folk'].map(g => <SelectItem key={g} value={g} className="text-white/80 text-sm capitalize">{g === 'any' ? 'Any' : g}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -434,7 +434,7 @@ const ElevenLabs = () => {
                 <Select value={musicMood} onValueChange={setMusicMood}>
                   <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
-                    {['any','upbeat','sad','energetic','calm','dark','romantic','epic','dreamy'].map(m => <SelectItem key={m} value={m} className="text-white/80 text-sm capitalize">{m === 'any' ? 'Any' : m}</SelectItem>)}
+                    {['any','upbeat','sad','energetic','calm','dark','romantic','epic','dreamy','aggressive','mysterious','nostalgic'].map(m => <SelectItem key={m} value={m} className="text-white/80 text-sm capitalize">{m === 'any' ? 'Any' : m}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -443,15 +443,15 @@ const ElevenLabs = () => {
                 <Select value={musicTempo} onValueChange={setMusicTempo}>
                   <SelectTrigger className="bg-white/[0.03] border-white/[0.08] text-white/80 rounded-xl h-9 text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#111] border-white/[0.1] rounded-xl">
-                    {['any','slow','medium','fast','very fast'].map(t => <SelectItem key={t} value={t} className="text-white/80 text-sm capitalize">{t === 'any' ? 'Any' : t}</SelectItem>)}
+                    {['any','very slow','slow','medium','fast','very fast'].map(t => <SelectItem key={t} value={t} className="text-white/80 text-sm capitalize">{t === 'any' ? 'Any' : t}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Label className="text-[11px] text-white/40">Duration (sec)</Label>
-                <Input type="number" value={musicDuration} onChange={(e) => setMusicDuration(e.target.value)} className="w-20 h-8 bg-white/[0.03] border-white/[0.08] text-white/80 rounded-lg text-sm" min="5" max="60" />
+                <Label className="text-[11px] text-white/40">Duration (sec, optional)</Label>
+                <Input type="number" value={musicDuration} onChange={(e) => setMusicDuration(e.target.value)} className="w-24 h-8 bg-white/[0.03] border-white/[0.08] text-white/80 rounded-lg text-sm" placeholder="Auto" />
               </div>
               <div className="flex items-center gap-2">
                 <Label className="text-[11px] text-white/40">Instrumental</Label>
@@ -460,14 +460,14 @@ const ElevenLabs = () => {
             </div>
             {!musicInstrumental && (
               <div>
-                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Lyrics</Label>
-                <Textarea value={musicLyrics} onChange={(e) => setMusicLyrics(e.target.value)} placeholder={"[Verse 1]\nYour lyrics here..."}
-                  className="min-h-[120px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/30 rounded-xl font-mono text-sm" />
+                <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Lyrics (no word limit)</Label>
+                <Textarea value={musicLyrics} onChange={(e) => setMusicLyrics(e.target.value)} placeholder={"[Verse 1]\nYour lyrics here — write as much as you want..."}
+                  className="min-h-[160px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/20 rounded-xl font-mono text-sm" />
               </div>
             )}
             <Button onClick={generateMusic} disabled={isGeneratingMusic || (!musicPrompt.trim() && !musicLyrics.trim())}
-              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
-              {isGeneratingMusic ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><Music className="w-4 h-4 mr-2" />Generate Music</>}
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11">
+              {isGeneratingMusic ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : 'Generate Music'}
             </Button>
           </div>
         );
@@ -477,8 +477,8 @@ const ElevenLabs = () => {
           <div className="space-y-5 max-w-2xl">
             <div>
               <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Describe the Sound</Label>
-              <Textarea value={sfxText} onChange={(e) => setSfxText(e.target.value)} placeholder="e.g., Thunder with heavy rain, footsteps on gravel, sci-fi laser..."
-                className="min-h-[140px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/30 rounded-xl text-sm" />
+              <Textarea value={sfxText} onChange={(e) => setSfxText(e.target.value)} placeholder="e.g., Thunder with heavy rain, footsteps on gravel..."
+                className="min-h-[140px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/20 rounded-xl text-sm" />
             </div>
             <div>
               <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Duration</Label>
@@ -492,8 +492,8 @@ const ElevenLabs = () => {
               </div>
             </div>
             <Button onClick={generateSoundEffect} disabled={isGeneratingSfx || !sfxText.trim()}
-              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
-              {isGeneratingSfx ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><Sparkles className="w-4 h-4 mr-2" />Generate Sound</>}
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11">
+              {isGeneratingSfx ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : 'Generate Sound'}
             </Button>
           </div>
         );
@@ -525,8 +525,8 @@ const ElevenLabs = () => {
               <input ref={fileInputRef} type="file" accept="audio/*" multiple className="hidden" onChange={(e) => { if (e.target.files) setCloneFiles(Array.from(e.target.files)); }} />
             </div>
             <Button onClick={cloneVoice} disabled={isCloning || !cloneName.trim() || cloneFiles.length === 0}
-              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
-              {isCloning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Cloning...</> : <><Wand2 className="w-4 h-4 mr-2" />Clone Voice</>}
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11">
+              {isCloning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Cloning...</> : 'Clone Voice'}
             </Button>
           </div>
         );
@@ -573,11 +573,11 @@ const ElevenLabs = () => {
             <div>
               <Label className="text-[11px] text-white/40 font-medium uppercase tracking-wider mb-2 block">Preview Text</Label>
               <Textarea value={vdText} onChange={(e) => setVdText(e.target.value)} placeholder="Text to preview..."
-                className="min-h-[80px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/30 rounded-xl text-sm" />
+                className="min-h-[80px] bg-white/[0.03] border-white/[0.08] text-white/90 placeholder:text-white/20 resize-none focus:border-white/20 rounded-xl text-sm" />
             </div>
             <Button onClick={designVoice} disabled={isDesigning || !vdText.trim()}
-              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
-              {isDesigning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Designing...</> : <><Sparkles className="w-4 h-4 mr-2" />Generate Voice</>}
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11">
+              {isDesigning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Designing...</> : 'Generate Voice'}
             </Button>
           </div>
         );
@@ -588,7 +588,7 @@ const ElevenLabs = () => {
             <div>
               <div onClick={() => sttFileInputRef.current?.click()}
                 className="border border-dashed border-white/[0.12] rounded-xl p-10 text-center cursor-pointer hover:border-white/30 hover:bg-white/[0.02] transition-all">
-                <Mic className="w-8 h-8 text-white/15 mx-auto mb-3" />
+                <Upload className="w-8 h-8 text-white/15 mx-auto mb-3" />
                 <p className="text-white/40 text-sm">Upload audio to transcribe</p>
                 <p className="text-white/15 text-xs mt-1">MP3, WAV, M4A, FLAC, OGG</p>
                 {sttFile && <p className="text-white/70 text-xs mt-3">{sttFile.name}</p>}
@@ -596,8 +596,8 @@ const ElevenLabs = () => {
               <input ref={sttFileInputRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setSttFile(e.target.files[0]); }} />
             </div>
             <Button onClick={transcribeAudio} disabled={isTranscribing || !sttFile}
-              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
-              {isTranscribing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Transcribing...</> : <><Languages className="w-4 h-4 mr-2" />Transcribe</>}
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11">
+              {isTranscribing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Transcribing...</> : 'Transcribe'}
             </Button>
             {sttResult && (
               <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]">
@@ -615,7 +615,7 @@ const ElevenLabs = () => {
             <div>
               <div onClick={() => isolationFileInputRef.current?.click()}
                 className="border border-dashed border-white/[0.12] rounded-xl p-10 text-center cursor-pointer hover:border-white/30 hover:bg-white/[0.02] transition-all">
-                <Headphones className="w-8 h-8 text-white/15 mx-auto mb-3" />
+                <Upload className="w-8 h-8 text-white/15 mx-auto mb-3" />
                 <p className="text-white/40 text-sm">Upload audio with background noise</p>
                 <p className="text-white/15 text-xs mt-1">Isolates vocals from music/noise</p>
                 {isolationFile && <p className="text-white/70 text-xs mt-3">{isolationFile.name}</p>}
@@ -623,8 +623,8 @@ const ElevenLabs = () => {
               <input ref={isolationFileInputRef} type="file" accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setIsolationFile(e.target.files[0]); }} />
             </div>
             <Button onClick={isolateAudio} disabled={isIsolating || !isolationFile}
-              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
-              {isIsolating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Isolating...</> : <><Headphones className="w-4 h-4 mr-2" />Isolate Audio</>}
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11">
+              {isIsolating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Isolating...</> : 'Isolate Audio'}
             </Button>
           </div>
         );
@@ -635,7 +635,7 @@ const ElevenLabs = () => {
             <div>
               <div onClick={() => dubbingFileInputRef.current?.click()}
                 className="border border-dashed border-white/[0.12] rounded-xl p-10 text-center cursor-pointer hover:border-white/30 hover:bg-white/[0.02] transition-all">
-                <Globe className="w-8 h-8 text-white/15 mx-auto mb-3" />
+                <Upload className="w-8 h-8 text-white/15 mx-auto mb-3" />
                 <p className="text-white/40 text-sm">Upload audio or video to dub</p>
                 <p className="text-white/15 text-xs mt-1">MP3, WAV, MP4, MOV</p>
                 {dubbingFile && <p className="text-white/70 text-xs mt-3">{dubbingFile.name}</p>}
@@ -663,8 +663,8 @@ const ElevenLabs = () => {
               </div>
             </div>
             <Button onClick={dubAudio} disabled={isDubbing || !dubbingFile}
-              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11 transition-all">
-              {isDubbing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Starting...</> : <><Globe className="w-4 h-4 mr-2" />Start Dubbing</>}
+              className="w-full bg-white hover:bg-white/90 text-black font-semibold rounded-xl h-11">
+              {isDubbing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Starting...</> : 'Start Dubbing'}
             </Button>
             {dubbingResult && (
               <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08]">
@@ -688,8 +688,8 @@ const ElevenLabs = () => {
       >
         {/* Sidebar Header */}
         <div className="p-4 border-b border-white/[0.06] flex items-center gap-3 min-h-[60px]">
-          <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center shrink-0">
-            <ElevenLabsLogo className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center shrink-0 text-white">
+            <ElevenLabsLogo />
           </div>
           {!sidebarCollapsed && (
             <div className="overflow-hidden whitespace-nowrap">
@@ -708,10 +708,7 @@ const ElevenLabs = () => {
                 key={tool.id}
                 onClick={() => handleToolChange(tool.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
-                  ${isActive
-                    ? 'bg-white/[0.08]'
-                    : 'hover:bg-white/[0.04]'
-                  }`}
+                  ${isActive ? 'bg-white/[0.08]' : 'hover:bg-white/[0.04]'}`}
                 title={sidebarCollapsed ? tool.label : undefined}
               >
                 {isActive && (
@@ -770,7 +767,6 @@ const ElevenLabs = () => {
             {generatedAudios.length > 0 && (
               <div className="mt-10 pt-8 border-t border-white/[0.06]">
                 <div className="flex items-center gap-2 mb-4">
-                  <AudioLines className="w-4 h-4 text-white/25" />
                   <h3 className="text-xs font-medium text-white/35 uppercase tracking-wider">Generated ({generatedAudios.length})</h3>
                 </div>
                 <div className="space-y-2">

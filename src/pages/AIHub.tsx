@@ -1,239 +1,207 @@
 import { Link } from 'react-router-dom';
-import { MessageSquare, Scissors, Image, Sparkles, ArrowLeft, Zap, Bot, Wand2, Film, Music, FileText, Globe, AudioLines } from 'lucide-react';
+import { ArrowLeft, Sparkles } from 'lucide-react';
 
-const IMAGES = {
-  mascot: 'https://mgx-backend-cdn.metadl.com/generate/images/1498224/2026-08-01/ttjdxryaajqq/mascot-foxy-artist-2026.png',
-  aiBrain: 'https://mgx-backend-cdn.metadl.com/generate/images/1498224/2026-08-01/ttjdyyicajrq/ai-creative-brain-2026.png',
-};
+// Minimalist monochrome tool icons
+const ChatIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth="1.5">
+    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const EditorIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth="1.5">
+    <path d="M15.5 2H8.6c-.4 0-.8.2-1.1.5l-5 5c-.3.3-.5.7-.5 1.1v12.8c0 .8.7 1.6 1.6 1.6h12.8c.9 0 1.6-.7 1.6-1.6V3.6c0-.9-.7-1.6-1.6-1.6z" strokeLinecap="round"/>
+    <path d="M14 2v6h6M10 12l-2 6 6-2 7-7-4-4-7 7z" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const ImageIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth="1.5">
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" strokeLinecap="round"/>
+    <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+    <path d="M21 15l-5-5L5 21" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const WritingIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth="1.5">
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" strokeLinecap="round"/>
+    <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" strokeLinecap="round"/>
+  </svg>
+);
+
+const WorldIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" strokeLinecap="round"/>
+  </svg>
+);
+
+const AudioIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth="1.5">
+    <path d="M2 10v4M6 6v12M10 3v18M14 8v8M18 5v14M22 9v6" strokeLinecap="round"/>
+  </svg>
+);
+
+const GeminiIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth="1.5">
+    <path d="M12 2L2 7l10 5 10-5-10-5z" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const MusicIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7" stroke="currentColor" strokeWidth="1.5">
+    <path d="M9 18V5l12-2v13" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+  </svg>
+);
 
 const tools = [
   {
     id: 'chat',
     title: 'AI Chat',
-    description: 'Chat with 350+ AI models including GPT-4, Claude, Gemini, and more. Brainstorm ideas, write scripts, get creative help.',
-    icon: MessageSquare,
-    color: 'from-purple-500 to-indigo-600',
-    borderColor: 'hover:border-purple-500/40',
-    bgGlow: 'group-hover:shadow-purple-500/10',
-    iconBg: 'bg-purple-500/15',
-    iconColor: 'text-purple-400',
+    description: 'Chat with 350+ AI models including GPT-4, Claude, Gemini, and more.',
+    icon: ChatIcon,
     link: '/ai/chat',
     badge: 'Most Popular',
-    badgeColor: 'bg-purple-500/20 text-purple-300',
+  },
+  {
+    id: 'gemini',
+    title: 'Gemini AI',
+    description: 'Google\'s most capable AI. Text, code, vision, image generation, reasoning, and search.',
+    icon: GeminiIcon,
+    link: '/ai/gemini',
+    badge: 'Full Suite',
   },
   {
     id: 'editor',
     title: 'Video Editor',
-    description: 'Edit videos right in your browser with OpenCut — a powerful, free, open-source video editor for creators.',
-    icon: Scissors,
-    color: 'from-pink-500 to-rose-600',
-    borderColor: 'hover:border-pink-500/40',
-    bgGlow: 'group-hover:shadow-pink-500/10',
-    iconBg: 'bg-pink-500/15',
-    iconColor: 'text-pink-400',
+    description: 'Edit videos in your browser with OpenCut — free, open-source video editor.',
+    icon: EditorIcon,
     link: '/ai/editor',
-    badge: 'Free & Open Source',
-    badgeColor: 'bg-pink-500/20 text-pink-300',
+    badge: 'Free',
+  },
+  {
+    id: 'elevenlabs',
+    title: 'ElevenLabs Audio',
+    description: 'Speech synthesis, voice cloning, sound effects, music, transcription, and dubbing.',
+    icon: AudioIcon,
+    link: '/ai/elevenlabs',
+    badge: '8 Tools',
   },
   {
     id: 'image',
     title: 'Image Generation',
-    description: 'Generate stunning images, concept art, character designs, and backgrounds using state-of-the-art AI models.',
-    icon: Image,
-    color: 'from-orange-500 to-amber-600',
-    borderColor: 'hover:border-orange-500/40',
-    bgGlow: 'group-hover:shadow-orange-500/10',
-    iconBg: 'bg-orange-500/15',
-    iconColor: 'text-orange-400',
+    description: 'Generate images, concept art, character designs using state-of-the-art AI models.',
+    icon: ImageIcon,
     link: '/ai/chat',
-    badge: 'Via AI Chat',
-    badgeColor: 'bg-orange-500/20 text-orange-300',
+    badge: 'Via Chat',
   },
   {
     id: 'writing',
     title: 'Script Writing',
-    description: 'Write dialogue, screenplays, story outlines, and character backstories with AI-powered creative writing assistance.',
-    icon: FileText,
-    color: 'from-cyan-500 to-teal-600',
-    borderColor: 'hover:border-cyan-500/40',
-    bgGlow: 'group-hover:shadow-cyan-500/10',
-    iconBg: 'bg-cyan-500/15',
-    iconColor: 'text-cyan-400',
+    description: 'Write dialogue, screenplays, story outlines with AI creative writing assistance.',
+    icon: WritingIcon,
     link: '/ai/chat',
-    badge: 'Via AI Chat',
-    badgeColor: 'bg-cyan-500/20 text-cyan-300',
+    badge: 'Via Chat',
   },
   {
     id: 'worldbuilding',
     title: 'World Building',
-    description: 'Design immersive universes with their own rules, geography, cultures, and lore. Let AI help expand your creative vision.',
-    icon: Globe,
-    color: 'from-emerald-500 to-green-600',
-    borderColor: 'hover:border-emerald-500/40',
-    bgGlow: 'group-hover:shadow-emerald-500/10',
-    iconBg: 'bg-emerald-500/15',
-    iconColor: 'text-emerald-400',
+    description: 'Design immersive universes with their own rules, geography, and cultures.',
+    icon: WorldIcon,
     link: '/ai/chat',
-    badge: 'Via AI Chat',
-    badgeColor: 'bg-emerald-500/20 text-emerald-300',
-  },
-  {
-    id: 'elevenlabs',
-    title: 'ElevenLabs AI Audio',
-    description: 'Generate lifelike speech in 29+ languages, clone voices, create sound effects, and transcribe audio with ElevenLabs.',
-    icon: AudioLines,
-    color: 'from-blue-500 to-cyan-600',
-    borderColor: 'hover:border-blue-500/40',
-    bgGlow: 'group-hover:shadow-blue-500/10',
-    iconBg: 'bg-blue-500/15',
-    iconColor: 'text-blue-400',
-    link: '/ai/elevenlabs',
-    badge: 'New',
-    badgeColor: 'bg-blue-500/20 text-blue-300',
+    badge: 'Via Chat',
   },
   {
     id: 'music',
     title: 'Music & Sound',
-    description: 'Compose background music, sound effects, and audio landscapes for your animations and creative projects.',
-    icon: Music,
-    color: 'from-violet-500 to-purple-600',
-    borderColor: 'hover:border-violet-500/40',
-    bgGlow: 'group-hover:shadow-violet-500/10',
-    iconBg: 'bg-violet-500/15',
-    iconColor: 'text-violet-400',
-    link: '/ai/chat',
-    badge: 'Coming Soon',
-    badgeColor: 'bg-violet-500/20 text-violet-300',
+    description: 'Compose background music, sound effects, and audio landscapes for your projects.',
+    icon: MusicIcon,
+    link: '/ai/elevenlabs',
+    badge: 'Via ElevenLabs',
   },
 ];
 
 const AIHub = () => {
   return (
-    <div className="min-h-screen bg-[#060411] text-white overflow-x-hidden">
-      {/* Background effects */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[200px] opacity-10 bg-purple-600" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[180px] opacity-10 bg-indigo-600" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[150px] opacity-5 bg-pink-500" />
-      </div>
-
-      {/* Subtle AI brain background */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03]">
-        <img src={IMAGES.aiBrain} alt="" className="w-full h-full object-cover" />
-      </div>
-
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-[#060411]/80 backdrop-blur-xl border-b border-white/[0.04]">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/[0.06]">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link
               to="/"
-              className="flex items-center gap-2 text-white/50 hover:text-white transition-colors group"
+              className="flex items-center gap-2 text-white/40 hover:text-white transition-colors group"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-              <span className="text-sm font-medium">Back to Home</span>
+              <span className="text-sm font-medium">Home</span>
             </Link>
-            <div className="w-px h-5 bg-white/10" />
-            <div className="flex items-center gap-2.5">
-              <img src={IMAGES.mascot} alt="Foxy" className="w-7 h-7 object-contain" />
-              <span className="font-bold text-base" style={{ fontFamily: 'Fredoka' }}>
-                <span className="text-orange-400">Foxy</span>{' '}
-                <span className="text-white/80">AI Tools</span>
-              </span>
-            </div>
+            <div className="w-px h-5 bg-white/[0.08]" />
+            <span className="text-sm font-semibold text-white">AI Tools</span>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20">
-            <Zap className="w-3.5 h-3.5 text-purple-400" />
-            <span className="text-xs font-bold text-purple-300">350+ Models • Free</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08]">
+            <span className="text-[11px] font-medium text-white/50">350+ Models • Free</span>
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="relative z-10 pt-16 pb-8 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] mb-8">
-            <Bot className="w-4 h-4 text-purple-400" />
-            <span className="text-sm text-white/60 font-medium">Powered by AI • Built for Creators</span>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black leading-[0.9] mb-6" style={{ fontFamily: 'Fredoka' }}>
-            <span className="text-white">Choose your </span>
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
-              creative tool.
-            </span>
+      <section className="relative z-10 pt-20 pb-12 px-6">
+        <div className="max-w-5xl mx-auto text-center">
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-4 tracking-tight">
+            AI Tools
           </h1>
-          <p className="text-white/40 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Everything you need to bring your animations to life — from brainstorming to final cut.
-            All free, all powered by cutting-edge AI.
+          <p className="text-white/30 text-lg max-w-xl mx-auto leading-relaxed">
+            Everything you need to create. All free, all powered by cutting-edge AI.
           </p>
         </div>
       </section>
 
       {/* Tools Grid */}
-      <section className="relative z-10 py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <section className="relative z-10 pb-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {tools.map((tool) => (
               <Link
                 key={tool.id}
                 to={tool.link}
-                className={`group relative p-7 rounded-2xl bg-white/[0.02] border border-white/[0.06] ${tool.borderColor} transition-all duration-500 hover:bg-white/[0.04] hover:shadow-2xl ${tool.bgGlow} hover:-translate-y-1`}
+                className="group relative p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.15] transition-all duration-300 hover:bg-white/[0.04] hover:-translate-y-0.5"
               >
-                {/* Badge */}
-                <div className="flex items-center justify-between mb-5">
-                  <div className={`w-14 h-14 rounded-xl ${tool.iconBg} flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                    <tool.icon className={`w-7 h-7 ${tool.iconColor}`} />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-white/60 group-hover:text-white group-hover:bg-white/[0.08] transition-all">
+                    <tool.icon />
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${tool.badgeColor}`}>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-medium bg-white/[0.04] border border-white/[0.06] text-white/40">
                     {tool.badge}
                   </span>
                 </div>
 
-                <h3 className="text-xl font-bold mb-2.5" style={{ fontFamily: 'Fredoka' }}>
+                <h3 className="text-base font-semibold mb-1.5 text-white/90">
                   {tool.title}
                 </h3>
-                <p className="text-white/35 text-sm leading-relaxed mb-5">
+                <p className="text-white/30 text-sm leading-relaxed">
                   {tool.description}
                 </p>
 
-                {/* Action hint */}
-                <div className="flex items-center gap-2 text-xs font-medium text-white/30 group-hover:text-white/60 transition-colors">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Click to open</span>
-                  <span className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                {/* Arrow hint */}
+                <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity text-white/30">
+                  <Sparkles className="w-4 h-4" />
                 </div>
-
-                {/* Gradient border glow on hover */}
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 pointer-events-none`} />
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Bottom info */}
-      <section className="relative z-10 py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-8 md:p-12 text-center">
-            <Wand2 className="w-8 h-8 text-orange-400 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: 'Fredoka' }}>
-              More tools coming soon
-            </h3>
-            <p className="text-white/35 max-w-lg mx-auto text-sm leading-relaxed">
-              We're constantly building new AI-powered tools for animators, storytellers, and creators.
-              Subscribe to our YouTube to stay updated on new releases.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="border-t border-white/[0.04] py-8 px-6 relative z-10">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link to="/" className="text-xs text-white/30 hover:text-orange-400 transition-colors font-medium">
-            ← Back to Foxy Code
+      <footer className="border-t border-white/[0.04] py-6 px-6 relative z-10">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <Link to="/" className="text-xs text-white/20 hover:text-white/60 transition-colors">
+            ← Home
           </Link>
-          <p className="text-[11px] text-white/20">© 2026 Foxy Code Animation Studio</p>
+          <p className="text-[11px] text-white/15">© 2026 Foxy Code</p>
         </div>
       </footer>
     </div>

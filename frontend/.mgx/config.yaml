@@ -1,0 +1,4 @@
+build: cd /workspace/app && pnpm run build
+build_path: /workspace/app/dist
+dev: cd /workspace/app && pnpm run dev
+install: cd /workspace/app && pnpm install

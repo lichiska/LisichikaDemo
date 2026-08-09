@@ -6,6 +6,7 @@ import Landing from './pages/Landing';
 import EditorPage from './pages/Editor';
 import AIHub from './pages/AIHub';
 import ElevenLabsPage from './pages/ElevenLabs';
+import GeminiAIPage from './pages/GeminiAI';
 
 const App = () => (
   <TooltipProvider>
@@ -17,6 +18,7 @@ const App = () => (
         <Route path="/ai/chat/*" element={<Index />} />
         <Route path="/ai/editor" element={<EditorPage />} />
         <Route path="/ai/elevenlabs" element={<ElevenLabsPage />} />
+        <Route path="/ai/gemini" element={<GeminiAIPage />} />
       </Routes>
     </BrowserRouter>
   </TooltipProvider>
