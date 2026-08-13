@@ -38,3 +38,13 @@
 - [x] Connect supported tools to Puter.js calls and show a clear fallback when the library is unavailable.
 - [x] Adapt new tools and outputs to the selected website language.
 - [x] Verify integration loading, error states, keyboard flow, responsive layouts, typecheck, and build.
+
+# Versatile AI settings, translation, and dynamic thumbnails checklist
+
+- [x] Add model/provider/mode/temperature/length/format controls for AI tools.
+- [x] Add theme presets and per-tool advanced settings with reset/apply behavior.
+- [x] Complete main-page English/Russian translation for labels, metadata, filters, ticker, and footer.
+- [x] Add a Russian-friendly display font and rebalance oversized headings.
+- [x] Create custom English and Russian thumbnail variants for the homepage.
+- [x] Add automatic thumbnail rotation with language-aware captions and pause controls.
+- [x] Verify settings behavior, translation completeness, typography, dynamic rotation, typecheck, build, and responsive layouts.
