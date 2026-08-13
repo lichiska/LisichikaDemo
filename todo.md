@@ -28,3 +28,13 @@
 - [x] Redesign AI Chat, Scene Architect, Hook Foundry, Story Signal, Frame Director, Voice Tuner, and Signal Decoder as distinct sections.
 - [x] Adapt AI tool labels, prompts, output scaffolding, and recent states to the active language.
 - [x] Verify keyboard navigation, focus states, language switching, settings persistence, routes, and responsive layouts.
+
+# Puter.js AI workspace expansion checklist
+
+- [x] Document the Puter.js integration boundary and client fallback behavior.
+- [x] Add the Puter.js client script and typed browser bridge.
+- [x] Expand the catalog with AI Chat, Vision, Image, Audio, Transcribe, Translate, Rewrite, Code, and Workflow tools.
+- [x] Add distinct tool-specific input and output panels with working local states.
+- [x] Connect supported tools to Puter.js calls and show a clear fallback when the library is unavailable.
+- [x] Adapt new tools and outputs to the selected website language.
+- [x] Verify integration loading, error states, keyboard flow, responsive layouts, typecheck, and build.
