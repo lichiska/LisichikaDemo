@@ -62,3 +62,9 @@ Signal Coral — #FF5B4D.
 ## Content Notes
 
 The current public channel is Foxy CodeName (@FoxyCodeName) and has three public videos: an untitled 15:38 video published August 8, 2026; “Knife in Velvet | An Eastern Tale of Love and Betrayal (Official Animated Music Video)”; and “Mulan Meets Heavy Metal | Epic AI Animation.” The redesign will surface those videos as curated transmissions with direct YouTube links and current public thumbnails.
+
+## Style Decisions
+
+- The AI Tools page is a live broadcast/tuning deck, using channel IDs, timecodes, indexed signals, and transmission-state language instead of generic dashboard language.
+- Dark-page hero sections include a cinematic signal artifact such as a waveform field, scanline layer, or cropped transmission frame.
+- Tool cards use indexed metadata, temperature/status cues, and editorial variation so they feel like instruments in a transmission deck rather than uniform SaaS cards.
