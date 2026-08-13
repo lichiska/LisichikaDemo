@@ -18,3 +18,13 @@
 - [x] Add saved/recent tool states and keyboard-friendly interactions.
 - [x] Add responsive desktop/mobile layouts and accessible empty states.
 - [x] Verify route, filters, preview interactions, typecheck, build, and screenshots.
+
+# Accessibility, language, and AI tool sections checklist
+
+- [x] Add prominent AI Tools entry points on the homepage and shared header.
+- [x] Add global language switcher with English and Russian UI dictionaries.
+- [x] Add accessibility settings panel with reduced motion, larger text, high contrast, and focus mode.
+- [x] Make accessibility and language settings persist locally across routes.
+- [x] Redesign AI Chat, Scene Architect, Hook Foundry, Story Signal, Frame Director, Voice Tuner, and Signal Decoder as distinct sections.
+- [x] Adapt AI tool labels, prompts, output scaffolding, and recent states to the active language.
+- [x] Verify keyboard navigation, focus states, language switching, settings persistence, routes, and responsive layouts.

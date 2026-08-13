@@ -2,6 +2,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Clock3, ExternalLink, Play, Radio, ScanLine, Sparkles, Volume2 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Link } from "wouter";
+import { usePreferences } from "../contexts/PreferencesContext";
+import PreferencesPanel from "../components/PreferencesPanel";
 
 type Transmission = {
   id: string;
@@ -58,6 +61,8 @@ const transmissions: Transmission[] = [
 const filters = ["All transmissions", "Animation", "Music video", "Story"] as const;
 
 export default function Home() {
+  const { language } = usePreferences();
+  const isRu = language === "ru";
   const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]>("All transmissions");
   const [selectedId, setSelectedId] = useState("01");
   const selected = transmissions.find((item) => item.id === selectedId) ?? transmissions[0];
@@ -67,7 +72,7 @@ export default function Home() {
   );
 
   return (
-    <main className="site-shell">
+    <main id="main-content" className="site-shell">
       <div className="grain" aria-hidden="true" />
       <div className="signal-rail" aria-hidden="true">
         <span className="rail-mark">FC</span>
@@ -76,17 +81,18 @@ export default function Home() {
         <span className="rail-index">001—003</span>
       </div>
 
-      <header className="topbar">
+      <a className="skip-link" href="#main-content">{isRu ? "К содержанию" : "Skip to content"}</a><header className="topbar">
         <a className="brand" href="#top" aria-label="Foxy CodeName home">
           <span className="fox-mark" aria-hidden="true"><i /><i /><b /></span>
           <span>FOXY <em>CODE</em>NAME</span>
         </a>
         <nav className="topnav" aria-label="Primary navigation">
-          <a href="#transmissions">Transmissions</a>
-          <a href="#about">Signal notes</a>
+          <a href="#transmissions">{isRu ? "Трансляции" : "Transmissions"}</a>
+          <Link className="ai-nav" href="/tools">{isRu ? "AI-инструменты" : "AI Tools"}</Link>
+          <a href="#about">{isRu ? "Заметки" : "Signal notes"}</a>
           <a href="https://youtube.com/@foxycodename" target="_blank" rel="noreferrer">YouTube <ExternalLink size={13} /></a>
         </nav>
-        <div className="live-chip"><span className="live-dot" /> ON AIR</div>
+        <div className="header-actions"><div className="live-chip"><span className="live-dot" /> ON AIR</div><PreferencesPanel /></div>
       </header>
 
       <section className="hero" id="top">
@@ -96,12 +102,13 @@ export default function Home() {
           <div className="hero-timecode">SIGNAL 00:01:26:18 / TUNED</div>
         </div>
         <div className="hero-copy">
-          <p className="eyebrow"><Radio size={14} /> INDEPENDENT VISUAL TRANSMISSIONS</p>
-          <h1>Make the<br /><span>strange</span> visible.</h1>
-          <p className="hero-dek">Foxy CodeName is a small studio for animated music videos, mythic edits, and stories that arrive from somewhere just beyond the feed.</p>
+          <p className="eyebrow"><Radio size={14} /> {isRu ? "НЕЗАВИСИМЫЕ ВИЗУАЛЬНЫЕ ТРАНСЛЯЦИИ" : "INDEPENDENT VISUAL TRANSMISSIONS"}</p>
+          <h1>{isRu ? <>Делай<br /><span>странное</span> видимым.</> : <>Make the<br /><span>strange</span> visible.</>}</h1>
+          <p className="hero-dek">{isRu ? "Foxy CodeName — небольшая студия анимации, музыкальных видео и историй, которые приходят из-за границы привычной ленты." : "Foxy CodeName is a small studio for animated music videos, mythic edits, and stories that arrive from somewhere just beyond the feed."}</p>
           <div className="hero-actions">
-            <a className="button button-coral" href="#transmissions">Enter the archive <ArrowUpRight size={16} /></a>
-            <a className="text-link" href="https://youtube.com/@foxycodename" target="_blank" rel="noreferrer"><Play size={15} fill="currentColor" /> Watch on YouTube</a>
+            <a className="button button-coral" href="#transmissions">{isRu ? "Открыть архив" : "Enter the archive"} <ArrowUpRight size={16} /></a>
+            <Link className="button button-outline ai-hero-link" href="/tools"><Sparkles size={15} /> {isRu ? "Открыть AI-инструменты" : "Open AI Tools"}</Link>
+            <a className="text-link" href="https://youtube.com/@foxycodename" target="_blank" rel="noreferrer"><Play size={15} fill="currentColor" /> {isRu ? "Смотреть на YouTube" : "Watch on YouTube"}</a>
           </div>
         </div>
         <div className="hero-stamp"><span>FC</span><small>CHANNEL<br />01</small></div>

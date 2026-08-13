@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { PreferencesProvider } from "./contexts/PreferencesContext";
 import About from "./pages/About";
 import AITools from "./pages/AITools";
 import Archive from "./pages/Archive";
@@ -13,4 +14,4 @@ import NotFound from "./pages/NotFound";
 import TransmissionDetail from "./pages/TransmissionDetail";
 
 function Router() { return <Switch><Route path="/" component={Home} /><Route path="/transmissions" component={Archive} /><Route path="/transmissions/:id" component={TransmissionDetail} /><Route path="/tools" component={AITools} /><Route path="/about" component={About} /><Route path="/contact" component={Contact} /><Route path="/404" component={NotFound} /><Route component={NotFound} /></Switch>; }
-export default function App() { return <ErrorBoundary><ThemeProvider defaultTheme="dark"><TooltipProvider><Toaster /><Router /></TooltipProvider></ThemeProvider></ErrorBoundary>; }
+export default function App() { return <ErrorBoundary><PreferencesProvider><ThemeProvider defaultTheme="dark"><TooltipProvider><Toaster /><Router /></TooltipProvider></ThemeProvider></PreferencesProvider></ErrorBoundary>; }
