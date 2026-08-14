@@ -48,3 +48,14 @@
 - [x] Create custom English and Russian thumbnail variants for the homepage.
 - [x] Add automatic thumbnail rotation with language-aware captions and pause controls.
 - [x] Verify settings behavior, translation completeness, typography, dynamic rotation, typecheck, build, and responsive layouts.
+
+# Full creator Studio expansion checklist
+
+- [x] Rename AI Tools to Studio in navigation, homepage CTAs, routes, headings, and settings copy.
+- [x] Add a Studio overview with project-based workflow stages and active production state.
+- [x] Add a Wan video workspace with prompt, storyboard, duration, aspect ratio, motion, camera, seed, and generation state controls.
+- [x] Add an ElevenLabs music workspace with prompt, genre, mood, duration, tempo, instruments, vocals, and generation state controls.
+- [x] Add cartoon production stages for concept, script, storyboard, voices, music, scenes, edit, and export.
+- [x] Add integration availability badges and safe fallback states without downloading media to the user’s phone.
+- [x] Localize all new Studio copy in English and Russian and preserve theme/accessibility preferences.
+- [x] Verify navigation, settings, responsive layouts, simulated generation states, and production build.
