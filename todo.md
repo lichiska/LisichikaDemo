@@ -70,3 +70,13 @@
 - [x] Add local-only media handling guidance so assets are not downloaded automatically to mobile devices.
 - [x] Verify all buttons, routes, settings, filters, responsive states, typecheck, and build.
 - [x] Prepare a GitHub-ready checkpoint without using the previously exposed credential.
+
+# Persistent media workflow checklist
+
+- [x] Add a local-first Studio project model with project name, active stage, settings, and draft metadata.
+- [x] Add autosave, project switching, duplicate, reset, JSON export, and JSON import controls.
+- [x] Add local video/audio file import with object URL previews and explicit revoke cleanup.
+- [x] Add editor clip metadata, trim markers, split state, track selection, captions, and preview playback.
+- [x] Add playable music-lab sketch transport with Web Audio oscillator preview and BPM/key controls.
+- [x] Add export-ready audio/video state and clear local-only privacy messaging.
+- [x] Verify persistence, import/export, media preview, audio transport, responsive layouts, typecheck, and build.
