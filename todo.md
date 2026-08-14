@@ -59,3 +59,14 @@
 - [x] Add integration availability badges and safe fallback states without downloading media to the user’s phone.
 - [x] Localize all new Studio copy in English and Russian and preserve theme/accessibility preferences.
 - [x] Verify navigation, settings, responsive layouts, simulated generation states, and production build.
+
+# Final studio expansion checklist
+
+- [x] Make homepage Animation, Music video, and Story category controls navigate and filter the archive.
+- [x] Finish remaining English/Russian homepage labels, metadata, and responsive typography adjustments.
+- [x] Expand Studio settings with model, mode, theme, quality, seed, aspect ratio, and export controls.
+- [x] Add an open-source-friendly browser video editor workspace with timeline, tracks, trim, split, transitions, captions, and export settings.
+- [x] Add an open-source-friendly music generator workspace with prompt, genre, tempo, key, structure, instruments, vocals, stems, and export settings.
+- [x] Add local-only media handling guidance so assets are not downloaded automatically to mobile devices.
+- [x] Verify all buttons, routes, settings, filters, responsive states, typecheck, and build.
+- [x] Prepare a GitHub-ready checkpoint without using the previously exposed credential.
