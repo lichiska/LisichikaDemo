@@ -134,6 +134,13 @@
 - [x] Capture route screenshots and validate asset loading in the built site.
 - [x] Commit and push the complete preview asset repair.
 
+# Cloudflare frozen-install repair
+
+- [x] Add the required pnpm workspace/package metadata for Cloudflare Pages.
+- [x] Regenerate and verify the frozen lockfile without managed dependencies.
+- [x] Run frozen install, typecheck, tests, production build, and Wrangler validation.
+- [ ] Save a checkpoint and push the Cloudflare build repair.
+
 # Standalone platform migration
 
 - [x] Inventory and remove Manus, Replit, and Atoms runtime/build dependencies.
