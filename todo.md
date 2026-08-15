@@ -83,8 +83,16 @@
 
 # Secure GitHub push checklist
 
-- [ ] Confirm a fresh secure GitHub authorization is active; never reuse the exposed token.
-- [ ] Confirm the target remote is `lichiska/LisichikaDemo`.
-- [ ] Validate the current project build and working tree before push.
-- [ ] Push the complete project to the authorized remote branch.
-- [ ] Verify the remote commit and report the resulting repository state.
+- [x] Confirm a fresh secure GitHub authorization is active; never reuse the exposed token.
+- [x] Confirm the target remote is `lichiska/LisichikaDemo`.
+- [x] Validate the current project build and working tree before push.
+- [x] Push the complete project to the authorized remote branch.
+- [x] Verify the remote commit and report the resulting repository state.
+
+# Deployment repair checklist
+
+- [x] Inspect the repository Vite config and Wrangler-generated files.
+- [x] Add a valid plugins array while preserving the existing Manus/Vite build behavior.
+- [x] Add or correct Cloudflare deployment configuration without committing credentials.
+- [x] Run `pnpm check`, `pnpm build`, and a Wrangler-compatible validation.
+- [x] Commit and push the deployment fix to `lichiska/LisichikaDemo`.
