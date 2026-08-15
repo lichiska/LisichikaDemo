@@ -105,3 +105,22 @@
 - [x] Add caching and immutable asset headers where supported by the deployment configuration.
 - [x] Run production checks, Wrangler dry-run, and compare build output sizes.
 - [x] Push the optimization commit to `lichiska/LisichikaDemo` and verify the remote branch.
+
+# Missing assets and lag repair checklist
+
+- [ ] Inventory every `/manus-storage/` visual URL and verify whether it resolves in the deployed build.
+- [ ] Identify broken external thumbnails and add reliable fallbacks or local persistent copies.
+- [ ] Inspect browser console/network logs for 404s, asset failures, and long-running requests.
+- [ ] Reduce expensive entrance, layout, and carousel animations while preserving the visual language.
+- [ ] Add reduced-motion and low-power behavior to animation-heavy sections.
+- [ ] Run route screenshots, typecheck, production build, and Wrangler dry run.
+- [x] Commit and push the asset/runtime repair to `lichiska/LisichikaDemo`.
+
+# Smooth animation and complete asset repair checklist
+
+- [x] Preserve all intentional animations and cinematic transitions.
+- [x] Restore every missing visual asset with stable hosted WebP delivery and fallbacks.
+- [x] Identify expensive layout/paint work and move animated layers to composited transforms where safe.
+- [x] Reduce avoidable rerenders without removing visible motion or interaction.
+- [x] Validate animated homepage and Studio routes, asset status, production build, and Wrangler deploy.
+- [x] Push the repair to `lichiska/LisichikaDemo`.
