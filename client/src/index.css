@@ -149,3 +149,12 @@ html[lang="ru"] .thumb-caption b { font-family: 'Oswald', sans-serif; text-trans
 .studio-result video { width: 100%; display: block; }
 .studio-result-text { white-space: pre-wrap; overflow: auto; color: rgba(245,239,227,.82); line-height: 1.55; }
 @media (max-width: 640px) { .account-shell { padding: 1rem; } .account-card { padding: 1.25rem; } .account-card h1 { font-size: 3.5rem; } .account-actions .button { width: 100%; justify-content: center; } }
+
+/* Respect explicit accessibility and device power/data preferences without removing the visual system. */
+@media (prefers-reduced-motion: reduce), (prefers-reduced-data: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .001ms !important; }
+  .studio-artifact-grid i, .waveform-bar, .hero-scanline { animation: none !important; }
+}
+html.reduced-motion *, html.reduced-motion *::before, html.reduced-motion *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .001ms !important; }
+html.reduced-motion .studio-artifact-grid i, html.reduced-motion .waveform-bar, html.reduced-motion .hero-scanline { animation: none !important; }
+.settings-select { width: 100%; min-height: 2.7rem; margin-top: .55rem; border: 1px solid rgba(255,255,255,.18); background: rgba(0,0,0,.28); color: var(--paper, #f5efe3); padding: .65rem .75rem; }

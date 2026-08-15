@@ -108,12 +108,12 @@
 
 # Missing assets and lag repair checklist
 
-- [ ] Inventory every `/manus-storage/` visual URL and verify whether it resolves in the deployed build.
-- [ ] Identify broken external thumbnails and add reliable fallbacks or local persistent copies.
-- [ ] Inspect browser console/network logs for 404s, asset failures, and long-running requests.
-- [ ] Reduce expensive entrance, layout, and carousel animations while preserving the visual language.
-- [ ] Add reduced-motion and low-power behavior to animation-heavy sections.
-- [ ] Run route screenshots, typecheck, production build, and Wrangler dry run.
+- [x] Inventory every `/manus-storage/` visual URL and verify whether it resolves in the deployed build.
+- [x] Identify broken external thumbnails and add reliable fallbacks or local persistent copies.
+- [x] Inspect browser console/network logs for 404s, asset failures, and long-running requests.
+- [x] Reduce expensive entrance, layout, and carousel animations while preserving the visual language.
+- [x] Add reduced-motion and low-power behavior to animation-heavy sections.
+- [x] Run route screenshots, typecheck, production build, and Wrangler dry run.
 - [x] Commit and push the asset/runtime repair to `lichiska/LisichikaDemo`.
 
 # Smooth animation and complete asset repair checklist
@@ -127,12 +127,12 @@
 
 # Complete preview asset repair checklist
 
-- [ ] Inventory every image source used by Home, About, Archive, TransmissionDetail, and Studio.
-- [ ] Verify every hosted asset path and identify references that only worked in local preview.
-- [ ] Create a single verified asset manifest with stable WebP paths and fallback artwork.
-- [ ] Apply the manifest and fallback handling across all preview routes.
-- [ ] Capture route screenshots and validate asset loading in the built site.
-- [ ] Commit and push the complete preview asset repair.
+- [x] Inventory every image source used by Home, About, Archive, TransmissionDetail, and Studio.
+- [x] Verify every hosted asset path and identify references that only worked in local preview.
+- [x] Create a single verified asset manifest with stable WebP paths and fallback artwork.
+- [x] Apply the manifest and fallback handling across all preview routes.
+- [x] Capture route screenshots and validate asset loading in the built site.
+- [x] Commit and push the complete preview asset repair.
 
 # Standalone platform migration
 
@@ -161,22 +161,22 @@
 - [x] Audit current Studio, Puter.js bridge, settings, routes, and attached capability requirements.
 - [x] Define real supported versus account-dependent capabilities and remove misleading demo language.
 - [x] Expand Puter.js tool routing, model selection, prompt execution, media outputs, and error states.
-- [ ] Expand settings for language, theme, accessibility, model/provider, privacy, persistence, and export behavior.
+- [x] Expand settings for language, theme, accessibility, model/provider, privacy, persistence, and export behavior.
 - [x] Add truthful capability labels for the current Puter video and music-brief implementations.
 - [x] Add embedded YouTube players to TransmissionDetail and other intended transmission surfaces.
 - [x] Exercise register, login, session refresh, and D1 project save/load end to end.
 - [x] Capture mobile screenshots for the standalone migration.
-- [ ] Push the standalone migration and record the resulting checkpoint and commit.
+- [x] Push the standalone migration and record the resulting checkpoint and commit.
 - [x] Add embedded YouTube playback on the homepage and transmission surfaces.
 - [x] Expand Studio with connected production workflows, local media editing, audio sequencing, project persistence, and real output handling.
-- [ ] Expand homepage sections and cross-route navigation with complete copy and working interactions.
-- [ ] Validate success/error paths on desktop and mobile, then checkpoint and push.
+- [x] Expand homepage sections and cross-route navigation with complete copy and working interactions.
+- [x] Validate success/error paths on desktop and mobile, then checkpoint and push.
 
 # Repository-local asset migration
 
-- [ ] Inventory every image currently referenced through `/manus-storage/`.
-- [ ] Copy all required optimized WebP artwork into the repository asset directory.
-- [ ] Rewrite every page and manifest reference to repository-local asset paths.
-- [ ] Verify no runtime image reference depends on `/manus-storage/` or remote thumbnail URLs.
-- [ ] Run typecheck, production build, and route screenshots.
-- [ ] Save a checkpoint and push the repository-local assets to GitHub.
+- [x] Inventory every image currently referenced through `/manus-storage/`.
+- [x] Copy all required optimized WebP artwork into the repository asset directory.
+- [x] Rewrite every page and manifest reference to repository-local asset paths.
+- [x] Verify no runtime image reference depends on `/manus-storage/` or remote thumbnail URLs.
+- [x] Run typecheck, production build, and route screenshots.
+- [x] Save a checkpoint and push the repository-local assets to GitHub.
