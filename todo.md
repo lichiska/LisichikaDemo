@@ -134,6 +134,44 @@
 - [ ] Capture route screenshots and validate asset loading in the built site.
 - [ ] Commit and push the complete preview asset repair.
 
+# Standalone platform migration
+
+- [x] Inventory and remove Manus, Replit, and Atoms runtime/build dependencies.
+- [x] Replace managed auth and backend assumptions with standalone Cloudflare Worker + D1 architecture.
+- [x] Configure the supplied D1 binding and migration workflow.
+- [x] Implement username/password accounts, password hashing, secure sessions, and user-owned records.
+- [x] Make Puter.js the real AI provider with live model discovery and capability-specific actions.
+- [x] Expand Studio, settings, homepage content, and YouTube embed playback without demo-only states.
+- [x] Run dependency audit, local migration, tests, typecheck, build, responsive screenshots, and Wrangler dry-run.
+- [ ] Apply the migration to the remote D1 database after Wrangler authorization.
+
+# D1 database and username/password accounts
+
+- [x] Upgrade the static project to the full-stack database/user template.
+- [x] Configure the supplied D1 binding without committing secrets.
+- [x] Add users, sessions, and user-owned Studio project schema and migrations.
+- [x] Implement secure username/password registration, login, logout, and session refresh.
+- [x] Persist Studio projects through authenticated backend procedures.
+- [x] Add account UI and clear authentication/database error states.
+- [x] Run migrations, tests, typecheck, production build, and authenticated browser checks.
+- [ ] Save a checkpoint and push the D1-backed account implementation.
+
+# Expanded functional creator platform
+
+- [x] Audit current Studio, Puter.js bridge, settings, routes, and attached capability requirements.
+- [x] Define real supported versus account-dependent capabilities and remove misleading demo language.
+- [x] Expand Puter.js tool routing, model selection, prompt execution, media outputs, and error states.
+- [ ] Expand settings for language, theme, accessibility, model/provider, privacy, persistence, and export behavior.
+- [x] Add truthful capability labels for the current Puter video and music-brief implementations.
+- [x] Add embedded YouTube players to TransmissionDetail and other intended transmission surfaces.
+- [x] Exercise register, login, session refresh, and D1 project save/load end to end.
+- [x] Capture mobile screenshots for the standalone migration.
+- [ ] Push the standalone migration and record the resulting checkpoint and commit.
+- [x] Add embedded YouTube playback on the homepage and transmission surfaces.
+- [x] Expand Studio with connected production workflows, local media editing, audio sequencing, project persistence, and real output handling.
+- [ ] Expand homepage sections and cross-route navigation with complete copy and working interactions.
+- [ ] Validate success/error paths on desktop and mobile, then checkpoint and push.
+
 # Repository-local asset migration
 
 - [ ] Inventory every image currently referenced through `/manus-storage/`.
