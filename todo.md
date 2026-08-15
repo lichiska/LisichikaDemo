@@ -124,3 +124,12 @@
 - [x] Reduce avoidable rerenders without removing visible motion or interaction.
 - [x] Validate animated homepage and Studio routes, asset status, production build, and Wrangler deploy.
 - [x] Push the repair to `lichiska/LisichikaDemo`.
+
+# Complete preview asset repair checklist
+
+- [ ] Inventory every image source used by Home, About, Archive, TransmissionDetail, and Studio.
+- [ ] Verify every hosted asset path and identify references that only worked in local preview.
+- [ ] Create a single verified asset manifest with stable WebP paths and fallback artwork.
+- [ ] Apply the manifest and fallback handling across all preview routes.
+- [ ] Capture route screenshots and validate asset loading in the built site.
+- [ ] Commit and push the complete preview asset repair.

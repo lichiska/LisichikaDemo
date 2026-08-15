@@ -5,12 +5,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { usePreferences } from "../contexts/PreferencesContext";
 import PreferencesPanel from "../components/PreferencesPanel";
+import { transmissionAssets } from "../lib/transmissions";
 
 type Transmission = { id: string; title: string; type: "Animation" | "Music video" | "Story"; duration: string; date: string; views: string; thumb: string; accent: string; youtube: string; note: string; };
 const transmissions: Transmission[] = [
-  { id: "01", title: "Mulan Meets Heavy Metal", type: "Animation", duration: "05:14", date: "11 AUG 2026", views: "111 views", thumb: "https://i.ytimg.com/vi/JTjcqzLYwFI/hqdefault.jpg", accent: "coral", youtube: "https://www.youtube.com/watch?v=JTjcqzLYwFI", note: "A mythic collision of legend, distortion, and arena-scale motion." },
-  { id: "02", title: "Knife in Velvet", type: "Music video", duration: "05:52", date: "12 AUG 2026", views: "3 views", thumb: "https://i.ytimg.com/vi/3zVSqM9XFcs/hqdefault.jpg", accent: "gold", youtube: "https://www.youtube.com/watch?v=3zVSqM9XFcs", note: "An eastern tale of love and betrayal, cut like a late-night transmission." },
-  { id: "03", title: "The Storm Within", type: "Story", duration: "15:38", date: "08 AUG 2026", views: "25 views", thumb: "https://i.ytimg.com/vi/rgxwL5vz1DI/hqdefault.jpg", accent: "lime", youtube: "https://www.youtube.com/watch?v=rgxwL5vz1DI", note: "A painterly Russian drama where freedom, ritual, and weather collide." }
+  { id: "01", title: "Mulan Meets Heavy Metal", type: "Animation", duration: "05:14", date: "11 AUG 2026", views: "111 views", thumb: transmissionAssets.symbolic, accent: "coral", youtube: "https://www.youtube.com/watch?v=JTjcqzLYwFI", note: "A mythic collision of legend, distortion, and arena-scale motion." },
+  { id: "02", title: "Knife in Velvet", type: "Music video", duration: "05:52", date: "12 AUG 2026", views: "3 views", thumb: transmissionAssets.intimate, accent: "gold", youtube: "https://www.youtube.com/watch?v=3zVSqM9XFcs", note: "An eastern tale of love and betrayal, cut like a late-night transmission." },
+  { id: "03", title: "The Storm Within", type: "Story", duration: "15:38", date: "08 AUG 2026", views: "25 views", thumb: transmissionAssets.storm, accent: "lime", youtube: "https://www.youtube.com/watch?v=rgxwL5vz1DI", note: "A painterly Russian drama where freedom, ritual, and weather collide." }
 ];
 const thumbVariants = { en: [{ src: "/manus-storage/storm-within_50e3b418.webp", title: "THE STORM WITHIN", sub: "A visual transmission / 03" }, { src: "/manus-storage/storm-dawn_a01dce90.webp", title: "HER LAST FREEDOM", sub: "A visual transmission / 04" }], ru: [{ src: "/manus-storage/groza-theatrical_0cd6bcf6.webp", title: "ГРОЗА", sub: "А. ОСТРОВСКИЙ / 03" }, { src: "/manus-storage/storm-within_50e3b418.webp", title: "БУРЯ ВНУТРИ", sub: "ВИЗУАЛЬНАЯ ТРАНСЛЯЦИЯ / 04" }] } as const;
 const filters = ["All transmissions", "Animation", "Music video", "Story"] as const;
