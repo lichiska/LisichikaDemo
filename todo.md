@@ -175,7 +175,7 @@
 - [x] Make Puter.js the real AI provider with live model discovery and capability-specific actions.
 - [x] Expand Studio, settings, homepage content, and YouTube embed playback without demo-only states.
 - [x] Run dependency audit, local migration, tests, typecheck, build, responsive screenshots, and Wrangler dry-run.
-- [ ] Apply the migration to the remote D1 database after Wrangler authorization.
+- [x] Apply the migration to the remote D1 database after Wrangler authorization.
 
 # D1 database and username/password accounts
 
@@ -223,4 +223,12 @@
 
 - [x] Inject and assert a real user-visible workspace load failure in the authenticated browser suite.
 - [x] Verify the persisted first field for camera, audio, orchestration, and export after refresh, in addition to storyboard.
-- [ ] Save a final checkpoint after the evidence-complete validation pass.
+- [x] Save a final checkpoint after the evidence-complete validation pass.
+
+# GitHub push after final refinement
+
+- [ ] Push the final industrial studio refinement checkpoint to the authorized GitHub remote and verify the remote commit.
+
+# Remote D1 migration priority
+
+- [x] Re-authorize Wrangler, apply the pending remote D1 migrations, and verify the production schema before pushing to GitHub.
