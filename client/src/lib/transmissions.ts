@@ -2,11 +2,11 @@
 export type Transmission = { id: string; title: string; type: "Animation" | "Music video" | "Story"; duration: string; date: string; views: string; thumb: string; youtube: string; note: string; description: string; };
 
 export const transmissionAssets = {
-  theatrical: "/manus-storage/groza-theatrical_0cd6bcf6.webp",
-  intimate: "/manus-storage/groza-intimate_63ef7724.webp",
-  symbolic: "/manus-storage/groza-symbolic_c140208a.webp",
-  lithograph: "/manus-storage/groza-lithograph_eecd3ae8.webp",
-  storm: "/manus-storage/storm-within_50e3b418.webp",
+  theatrical: "/assets/foxy/groza-theatrical.webp",
+  intimate: "/assets/foxy/groza-intimate.webp",
+  symbolic: "/assets/foxy/groza-symbolic.webp",
+  lithograph: "/assets/foxy/groza-lithograph.webp",
+  storm: "/assets/foxy/storm-within.webp",
 } as const;
 
 export const transmissions: Transmission[] = [

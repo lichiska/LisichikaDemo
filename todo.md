@@ -133,3 +133,12 @@
 - [ ] Apply the manifest and fallback handling across all preview routes.
 - [ ] Capture route screenshots and validate asset loading in the built site.
 - [ ] Commit and push the complete preview asset repair.
+
+# Repository-local asset migration
+
+- [ ] Inventory every image currently referenced through `/manus-storage/`.
+- [ ] Copy all required optimized WebP artwork into the repository asset directory.
+- [ ] Rewrite every page and manifest reference to repository-local asset paths.
+- [ ] Verify no runtime image reference depends on `/manus-storage/` or remote thumbnail URLs.
+- [ ] Run typecheck, production build, and route screenshots.
+- [ ] Save a checkpoint and push the repository-local assets to GitHub.
