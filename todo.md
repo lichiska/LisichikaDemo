@@ -80,3 +80,11 @@
 - [x] Add playable music-lab sketch transport with Web Audio oscillator preview and BPM/key controls.
 - [x] Add export-ready audio/video state and clear local-only privacy messaging.
 - [x] Verify persistence, import/export, media preview, audio transport, responsive layouts, typecheck, and build.
+
+# Secure GitHub push checklist
+
+- [ ] Confirm a fresh secure GitHub authorization is active; never reuse the exposed token.
+- [ ] Confirm the target remote is `lichiska/LisichikaDemo`.
+- [ ] Validate the current project build and working tree before push.
+- [ ] Push the complete project to the authorized remote branch.
+- [ ] Verify the remote commit and report the resulting repository state.
