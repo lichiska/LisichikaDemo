@@ -232,3 +232,9 @@
 # Remote D1 migration priority
 
 - [x] Re-authorize Wrangler, apply the pending remote D1 migrations, and verify the production schema before pushing to GitHub.
+
+# Authentication and feature discoverability correction
+
+- [x] Add a prominent Login/Register or Account entry to the public header and homepage.
+- [x] Make Studio, Production Lab, account settings, and major creator surfaces directly discoverable from navigation.
+- [x] Verify unauthenticated login/register access and authenticated navigation to the requested feature surfaces.

@@ -224,3 +224,9 @@ html.reduced-motion .studio-artifact-grid i, html.reduced-motion .waveform-bar, 
 .workspace-tabs button.is-active { border-color:var(--signal-coral); background:color-mix(in srgb, var(--signal-coral) 14%, transparent); }
 .workspace-editor { max-width:60rem; }
 @media (max-width: 700px) { .consistency-grid { grid-template-columns:1fr; } }
+
+/* Direct authentication entry points */
+.account-nav { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 10px; color: #ebe4d5; border: 1px solid rgba(255,91,77,.6); background: rgba(255,91,77,.08); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+.account-nav:hover, .account-nav:focus-visible { color: #171515; background: #ff5b4d; outline: 2px solid rgba(255,91,77,.35); outline-offset: 2px; }
+.account-hero-link { border-color: rgba(255,91,77,.45); }
+@media (max-width: 560px) { .account-nav { padding: 0 8px; font-size: 9px; }.account-nav span { display: none; }.account-nav svg { width: 16px; height: 16px; } }
