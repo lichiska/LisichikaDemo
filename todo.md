@@ -134,12 +134,20 @@
 - [x] Capture route screenshots and validate asset loading in the built site.
 - [x] Commit and push the complete preview asset repair.
 
+# Deployment log repair
+
+- [x] Inspect the attached deployment log and identify the current Cloudflare failure.
+- [x] Reproduce the deployment failure locally with the same install/build contract.
+- [x] Apply the precise deployment fix without restoring managed dependencies.
+- [x] Run frozen install, tests, typecheck, build, and Wrangler validation.
+- [ ] Save a checkpoint and push the deployment repair.
+
 # Cloudflare frozen-install repair
 
 - [x] Add the required pnpm workspace/package metadata for Cloudflare Pages.
 - [x] Regenerate and verify the frozen lockfile without managed dependencies.
 - [x] Run frozen install, typecheck, tests, production build, and Wrangler validation.
-- [ ] Save a checkpoint and push the Cloudflare build repair.
+- [x] Save a checkpoint and push the Cloudflare build repair.
 
 # Standalone platform migration
 
@@ -161,7 +169,7 @@
 - [x] Persist Studio projects through authenticated backend procedures.
 - [x] Add account UI and clear authentication/database error states.
 - [x] Run migrations, tests, typecheck, production build, and authenticated browser checks.
-- [ ] Save a checkpoint and push the D1-backed account implementation.
+- [x] Save a checkpoint and push the D1-backed account implementation.
 
 # Expanded functional creator platform
 
