@@ -134,13 +134,30 @@
 - [x] Capture route screenshots and validate asset loading in the built site.
 - [x] Commit and push the complete preview asset repair.
 
+# Industrial anime studio specification implementation
+
+- [x] Parse the attached specification into strata, subsystems, dependencies, and acceptance criteria.
+- [x] Define capability tiers separating implemented browser/D1/Puter.js functions from infrastructure-dependent functions.
+- [x] Add a persistent production ontology for projects, characters, worlds, scenes, assets, lineage, and review events.
+- [x] Add cognitive pre-production workspaces for intent, themes, archetypes, subtext, pacing, and emotional arcs.
+- [x] Add a repeatable UI verification step for ProductionLab entity mutations proving worlds/assets visibly update and disappear after revise/delete actions.
+- [x] Split consistency into distinct character/world/asset panels with separate rendered findings and provenance details.
+- [x] Extend authenticated UI verification to assert consistency findings visibly render after an audit and remain available after refresh.
+- [x] Parse Puter analysis into structured JSON and render separate typed panels for intent, themes, archetypes, subtext, pacing, and emotional arcs.
+- [x] Render real compliance events in ProductionLab using the compliance API/data instead of static placeholder timeline copy.
+- [x] Add a committed verification artifact for ontology CRUD and remediation flows covering characters, worlds, assets, review remediation, and compliance rendering.
+- [x] Implement real persisted storyboard, camera, audio, orchestration, and export workspace records with dedicated fields/state instead of one shared draft string.
+- [x] Add committed validation coverage for production workspaces that checks success and error states, saved-state reload, and visible outputs.
+- [x] Add QA, self-healing review loops, compliance notices, audit logs, and lineage views.
+- [x] Validate the integrated studio slice and document unsupported external infrastructure requirements.
+
 # Deployment log repair
 
 - [x] Inspect the attached deployment log and identify the current Cloudflare failure.
 - [x] Reproduce the deployment failure locally with the same install/build contract.
 - [x] Apply the precise deployment fix without restoring managed dependencies.
 - [x] Run frozen install, tests, typecheck, build, and Wrangler validation.
-- [ ] Save a checkpoint and push the deployment repair.
+- [x] Save a checkpoint and push the deployment repair.
 
 # Cloudflare frozen-install repair
 
@@ -195,3 +212,15 @@
 - [x] Verify no runtime image reference depends on `/manus-storage/` or remote thumbnail URLs.
 - [x] Run typecheck, production build, and route screenshots.
 - [x] Save a checkpoint and push the repository-local assets to GitHub.
+
+# Industrial studio final validation refinement
+
+- [x] Make the ProductionLab audit control complete reliably with a bounded Puter timeout/fallback, then assert the actual UI action changes and persists the visible finding.
+- [x] Add user-visible workspace load/save error state and validate rendered field persistence for every dedicated workspace.
+- [x] Re-run the complete acceptance suite and checkpoint the refined implementation.
+
+# Final acceptance evidence
+
+- [x] Inject and assert a real user-visible workspace load failure in the authenticated browser suite.
+- [x] Verify the persisted first field for camera, audio, orchestration, and export after refresh, in addition to storyboard.
+- [ ] Save a final checkpoint after the evidence-complete validation pass.
