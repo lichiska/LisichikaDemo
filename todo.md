@@ -238,3 +238,7 @@
 - [x] Add a prominent Login/Register or Account entry to the public header and homepage.
 - [x] Make Studio, Production Lab, account settings, and major creator surfaces directly discoverable from navigation.
 - [x] Verify unauthenticated login/register access and authenticated navigation to the requested feature surfaces.
+
+# Push latest navigation correction
+
+- [ ] Push the latest Sign in/Account, Studio, Production, and preview-host corrections to the authorized GitHub remote and verify the remote main commit.
