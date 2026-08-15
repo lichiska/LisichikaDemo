@@ -96,3 +96,12 @@
 - [x] Add or correct Cloudflare deployment configuration without committing credentials.
 - [x] Run `pnpm check`, `pnpm build`, and a Wrangler-compatible validation.
 - [x] Commit and push the deployment fix to `lichiska/LisichikaDemo`.
+
+# Performance optimization checklist
+
+- [x] Audit current image sizes, asset formats, and bundle composition.
+- [x] Preserve visual quality while serving responsive modern image formats and lazy-loading below-the-fold media.
+- [x] Add route-level code splitting and defer non-critical third-party scripts.
+- [x] Add caching and immutable asset headers where supported by the deployment configuration.
+- [x] Run production checks, Wrangler dry-run, and compare build output sizes.
+- [x] Push the optimization commit to `lichiska/LisichikaDemo` and verify the remote branch.
